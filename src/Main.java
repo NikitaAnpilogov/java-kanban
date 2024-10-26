@@ -29,9 +29,9 @@ public class Main {
         newSubtask.setStatus(Status.NEW);
         taskManager.updateSubtask(newSubtask);
         System.out.println("Update" + taskManager);
-        taskManager.remoteTask(idTask1);
-        taskManager.remoteSubtask(idSub1);
-        taskManager.remoteEpic(idEpic2);
+        taskManager.removeTask(idTask1);
+        taskManager.removeSubtask(idSub1);
+        taskManager.removeEpic(idEpic2);
         System.out.println("Delete" + taskManager);
 
     }

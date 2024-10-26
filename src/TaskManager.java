@@ -38,22 +38,22 @@ public class TaskManager {
         }
         return listSubtask;
     }
-    public void remoteAllTask () {
+    public void removeAllTask () {
         tasks.clear();
     }
-    public void remoteAllEpic () {
+    public void removeAllEpic () {
         for (Epic epic : epics.values()) {
             ArrayList<Integer> subtasksOfEpic = epic.getSubtasks();
             for (Integer id : subtasksOfEpic) {
-                remoteSubtask(id);
+                removeSubtask(id);
             }
-            epic.remoteSubtasks();
+            epic.removeSubtasks();
         }
         epics.clear();
     }
-    public void remoteAllSubtask () {
+    public void removeAllSubtask () {
         for (Epic epic : epics.values()) {
-            epic.remoteSubtasks();
+            epic.removeSubtasks();
             checkStatusEpic(epic.getId());
         }
         subtasks.clear();
@@ -61,43 +61,52 @@ public class TaskManager {
     public Task getTask (int id) {
         Task returnTask = null;
         if (!tasks.isEmpty()) {
-            for (Integer idKey : tasks.keySet()) {
+            if (tasks.containsKey(id)) {
+                returnTask = tasks.get(id);
+            }
+            /*for (Integer idKey : tasks.keySet()) {
                 if (idKey == id) {
                     returnTask = tasks.get(idKey);
                 }
-            }
+            }*/
         }
         return returnTask;
     }
     public Epic getEpic (int id) {
         Epic returnEpic = null;
         if (!epics.isEmpty()) {
-            for (Integer idKey : epics.keySet()) {
+            if (epics.containsKey(id)) {
+                returnEpic = epics.get(id);
+            }
+            /*for (Integer idKey : epics.keySet()) {
                 if (idKey == id) {
                     returnEpic = epics.get(idKey);
                 }
-            }
+            }*/
         }
         return returnEpic;
     }
     public Subtask getSubtask (int id) {
         Subtask returnSubtask = null;
         if (!subtasks.isEmpty()) {
-            for (Integer idKey : subtasks.keySet()) {
+            if (subtasks.containsKey(id)) {
+                returnSubtask = subtasks.get(id);
+            }
+            /*for (Integer idKey : subtasks.keySet()) {
                 if (idKey == id) {
                     returnSubtask = subtasks.get(idKey);
                 }
-            }
+            }*/
         }
         return returnSubtask;
     }
     public int addTask (Task task) {
-        int idTask = task.hashCode();
+        int idTask = task.getId();
         tasks.put(idTask, task);
         return idTask;
     }
     public int addEpic (Epic epic) {
-        int idEpic = epic.hashCode();
+        int idEpic = epic.getId();
         epics.put(idEpic, epic);
         return idEpic;
     }
@@ -139,37 +148,35 @@ public class TaskManager {
         }
         int idEpic = subtask.getIdEpic();
         checkStatusEpic(idEpic);
-        //Epic epic = epics.get(idEpic);
-        //epic.addSubtask(subtask);
     }
-    public void remoteTask (int id) {
+    public void removeTask (int id) {
         if (!tasks.isEmpty()) {
             if (tasks.containsKey(id)) {
                 tasks.remove(id);
             }
         }
     }
-    public void remoteEpic (int id) {
+    public void removeEpic (int id) {
         if (!epics.isEmpty()) {
             if (epics.containsKey(id)) {
                 Epic epic = epics.get(id);
                 ArrayList<Integer> subtask = epic.getSubtasks();
                 for (int i = 0; i < subtask.size(); i++) {
                     int idSubEpic = subtask.get(i);
-                    remoteSubtask(idSubEpic);
+                    removeSubtask(idSubEpic);
                 }
-                epic.remoteSubtasks();
+                epic.removeSubtasks();
                 epics.remove(id);
             }
         }
     }
-    public void remoteSubtask (int id) {
+    public void removeSubtask (int id) {
         if (!subtasks.isEmpty()) {
             if (subtasks.containsKey(id)) {
                 Subtask subtask = subtasks.get(id);
                 int idEpic = subtask.getIdEpic();
                 Epic epic = epics.get(idEpic);
-                epic.remoteSubtask(id);
+                epic.removeSubtask(id);
                 subtasks.remove(id);
                 checkStatusEpic(idEpic);
             }

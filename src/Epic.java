@@ -1,18 +1,22 @@
 import java.util.ArrayList;
-public class Epic extends Task {
-    private ArrayList<Integer> subtasksId;
+public class Epic extends Task { // Прошу прочесть комментарий
+    private ArrayList<Integer> subtasksId; // В этом списке хранятся не сами подзадачи, а id подзадачи, которые закреплены за этим конкретным эпиком.
 
-    public Epic (String name, String description) {
+    // Это сделано для удобного отслеживания статуса эпика, и поиска какие подзадачи за ним закреплены
+    public Epic(String name, String description) {
         super(name, description);
         subtasksId = new ArrayList<>();
     }
-    public ArrayList<Integer> getSubtasks () {
+
+    public ArrayList<Integer> getSubtasks() {
         return subtasksId;
     }
-    public void addSubtask (Subtask subtask) {
+
+    public void addSubtask(Subtask subtask) { // Этот метод не добавляет подзадачу мапу таск менеджера, а добавляет id подзадачи в список эпика для удобной навигации
         subtasksId.add(subtask.getId());
     }
-    public void remoteSubtask (int id) {
+
+    public void removeSubtask(int id) { // Тоже самое только с удалением подзадачи из списка
         if (!subtasksId.isEmpty()) {
             if (subtasksId.contains(id)) {
                 int index = subtasksId.indexOf(id);
@@ -21,18 +25,7 @@ public class Epic extends Task {
         }
     }
 
-    /*public void checkStatusSubtask () {
-        int stat = 0;
-        for (Subtask subtask : subtasks) {
-            if (subtask.status.equals(Status.DONE)) {
-                stat++;
-            }
-        }
-        if (stat == subtasks.size()) {
-            this.status = Status.DONE;
-        }
-    }*/
-    public void remoteSubtasks () {
+    public void removeSubtasks() { // Очищения списка id подзадач этого эпика
         if (!subtasksId.isEmpty()) {
             subtasksId.clear();
         }
