@@ -1,14 +1,37 @@
+import java.util.ArrayList;
+
 public class Main {
 
     public static void main(String[] args) {
-        TaskManager taskManager = new TaskManager();
+        InMemoryTaskManager taskManager = new InMemoryTaskManager();
         Task task1 = new Task("Name1", "Description1", Status.NEW);
         Task task2 = new Task("Name2", "Description2", Status.IN_PROGRESS);
         int idTask1 = taskManager.addTask(task1);
         int idTask2 = taskManager.addTask(task2);
         System.out.println(idTask1 + "  " + idTask2);
         System.out.println(task1 + "  " + task2);
+
+        System.out.println("Check History");
+        ArrayList<Task> history = taskManager.historyManager.getHistory();
+        for (Task t : history) {
+            System.out.println(t);
+        }
+        System.out.println(history.size());
+
         Task newTask = taskManager.getTask(idTask1);
+
+        System.out.println("Check History2");
+        ArrayList<Task> history2 = taskManager.historyManager.getHistory();
+        for (Task t : history) {
+            System.out.println(t);
+        }
+        System.out.println(history2.size());
+
+        Task newTask2 = taskManager.getTask(idTask2);
+        Task newTask3 = taskManager.getTask(idTask2);
+        Task newTask4 = taskManager.getTask(idTask1);
+
+
         newTask.setStatus(Status.DONE);
         taskManager.updateTask(newTask);
         Epic epic1 = new Epic("NameEpic1", "DescriptionEpic1");
@@ -21,6 +44,29 @@ public class Main {
         int idEpic2 = taskManager.addEpic(epic2);
         Subtask subtask3 = new Subtask("NameSubtask3", "DescriptionSubtask3", Status.DONE, idEpic2);
         int idSub3 = taskManager.addSubtask(subtask3);
+
+        Epic newEpic1 = taskManager.getEpic(idEpic1);
+        Epic newEpic2 = taskManager.getEpic(idEpic2);
+        Subtask newSub1 = taskManager.getSubtask(idSub1);
+        Subtask newSub2 = taskManager.getSubtask(idSub3);
+        Subtask newSub3 = taskManager.getSubtask(idSub3);
+        Epic newEpic3 = taskManager.getEpic(idEpic1);
+
+        System.out.println("Check History3");
+        ArrayList<Task> history3 = taskManager.historyManager.getHistory();
+        for (Task t : history) {
+            System.out.println(t);
+        }
+        System.out.println(history3.size());
+
+        Epic newEpic4 = taskManager.getEpic(idEpic2);
+        System.out.println("Check History4");
+        ArrayList<Task> history4 = taskManager.historyManager.getHistory();
+        for (Task t : history) {
+            System.out.println(t);
+        }
+        System.out.println(history4.size());
+
         System.out.println("Add" + taskManager);
         System.out.println(taskManager.getSubtaskOfEpic(idEpic1));
         newTask.setStatus(Status.IN_PROGRESS);
