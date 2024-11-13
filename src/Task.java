@@ -6,14 +6,14 @@ public class Task {
     protected Integer id;
     protected Status status;
 
-    public Task (String name, String description, Status status) {
+    public Task(String name, String description, Status status) {
         this.name = name;
         this.description = description;
         this.id = this.hashCode();
         this.status = status;
     }
 
-    public Task (String name, String description) {
+    public Task(String name, String description) {
         this.name = name;
         this.description = description;
         this.id = this.hashCode();
@@ -21,7 +21,7 @@ public class Task {
     }
 
     @Override
-    public boolean equals (Object obj) {
+    public boolean equals(Object obj) {
         if (this == obj) return true;
         if (obj == null) return false;
         if (this.getClass() != obj.getClass()) return false;
@@ -63,13 +63,25 @@ public class Task {
                 '}';
     }
 
-    public Integer getId () {
+    public Integer getId() {
         return id;
     }
-    public void setStatus (Status status) {
+    public void setStatus(Status status) {
         this.status = status;
     }
-    public Status getStatus () {
+    public Status getStatus() {
         return status;
+    }
+    public String getName() {
+        return name;
+    }
+    public String getDescription() {
+        return description;
+    }
+    public void setName(String name) {
+        this.name = name;
+    }
+    public void setDescription(String description) {
+        this.description = description;
     }
 }
