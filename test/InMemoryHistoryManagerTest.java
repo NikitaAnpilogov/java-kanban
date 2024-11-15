@@ -1,4 +1,9 @@
+import managers.InMemoryHistoryManager;
 import org.junit.jupiter.api.Test;
+import tasks.Epic;
+import tasks.Status;
+import tasks.Subtask;
+import tasks.Task;
 
 import java.util.ArrayList;
 
@@ -36,5 +41,4 @@ class InMemoryHistoryManagerTest {
         tas = test.get(0);
         assertEquals(tas.getName(), subtask.getName(), "Неправильный порядок истории, не удалились задачи превышающие лимит");
     }
-
 }

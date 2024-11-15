@@ -1,3 +1,9 @@
+package managers;
+
+import tasks.Epic;
+import tasks.Subtask;
+import tasks.Task;
+
 import java.util.ArrayList;
 
 public interface TaskManager {
@@ -16,10 +22,9 @@ public interface TaskManager {
     void updateTask(Task task);
     void updateEpic(Epic epic);
     void updateSubtask(Subtask subtask);
-    String toString();
     void removeTask(int id);
     void removeEpic(int id);
     void removeSubtask(int id);
-    ArrayList<Subtask> getSubtaskOfEpic(int id);
-    void checkStatusEpic(int id);
+    ArrayList<Subtask> getSubtasksOfEpic(int id);
+    ArrayList<Task> getHistory();
 }

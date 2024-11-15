@@ -1,16 +1,23 @@
+package managers;
+
+import tasks.Epic;
+import tasks.Status;
+import tasks.Subtask;
+import tasks.Task;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 public class InMemoryTaskManager implements TaskManager {
     private HashMap<Integer, Task> tasks;
     private HashMap<Integer, Epic> epics;
     private HashMap<Integer, Subtask> subtasks;
-    public InMemoryHistoryManager historyManager;
+    private HistoryManager historyManager;
 
     public InMemoryTaskManager() {
         tasks = new HashMap<>();
         epics = new HashMap<>();
         subtasks = new HashMap<>();
-        historyManager = new InMemoryHistoryManager();
+        historyManager = Managers.getDefaultHistory();
     }
 
     @Override
@@ -124,7 +131,7 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public String toString() {
-        return "TaskManager{" +
+        return "managers.TaskManager{" +
                 "tasks=" + tasks +
                 ", epics=" + epics +
                 ", subtasks=" + subtasks +
@@ -191,7 +198,7 @@ public class InMemoryTaskManager implements TaskManager {
         }
     }
     @Override
-    public ArrayList<Subtask> getSubtaskOfEpic(int id) {
+    public ArrayList<Subtask> getSubtasksOfEpic(int id) {
         Epic epic = epics.get(id);
         ArrayList<Subtask> subtaskOfEpic = new ArrayList<>();
         ArrayList<Integer> listSubtask = epic.getSubtasks();
@@ -201,8 +208,7 @@ public class InMemoryTaskManager implements TaskManager {
         }
         return subtaskOfEpic;
     }
-    @Override
-    public void checkStatusEpic(int id) {
+    private void checkStatusEpic(int id) {
         Epic epic = epics.get(id);
         ArrayList<Integer> subtaskOfEpic = epic.getSubtasks();
         int numNewStatus = 0;
@@ -226,16 +232,8 @@ public class InMemoryTaskManager implements TaskManager {
             epic.setStatus(Status.IN_PROGRESS);
         }
     }
-
-   /* public ArrayList<Task> getHistory() {
-        return history;
+    @Override
+    public ArrayList<Task> getHistory() {
+        return historyManager.getHistory();
     }
-    private <T extends Task> void addHistory(T task) {
-        if (history.size() == 10) {
-            history.remove(0);
-        }
-        Task taskHistory = (Task) task;
-        history.add(taskHistory);
-    }*/
-
 }

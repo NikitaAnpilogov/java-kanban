@@ -1,6 +1,9 @@
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
+import managers.InMemoryTaskManager;
 import org.junit.jupiter.api.Test;
+import tasks.Epic;
+import tasks.Status;
+import tasks.Subtask;
+import tasks.Task;
 
 import java.util.ArrayList;
 
@@ -21,6 +24,7 @@ class InMemoryTaskManagerTest {
         Task taskTest = taskManager.getTask(taskId);
         assertEquals(taskTest, task, "addAndGetTask не работает");
     }
+
     @Test
     void shouldUpdateTaskAndGetListTask() {
         int taskId = taskManager.addTask(task);
@@ -33,26 +37,30 @@ class InMemoryTaskManagerTest {
         Task taskTest2 = test.get(0);
         assertEquals(taskTest2.getStatus(), Status.IN_PROGRESS, "Задача не обновилась");
     }
+
     @Test
     void shouldRemoveTask() {
         taskManager.removeTask(task.getId());
         Task taskTest = taskManager.getTask(task.getId());
         assertNull(taskTest, "removeTask не работает");
     }
+
     @Test
     void shouldRemoveAllTask() {
         int taskId = taskManager.addTask(task);
         int taskId2 = taskManager.addTask(task2);
         taskManager.removeAllTask();
         ArrayList<Task> test = taskManager.getListTask();
-        assertEquals(test.size(),0, "removeAllTask не работает");
+        assertEquals(test.size(), 0, "removeAllTask не работает");
     }
+
     @Test
     void shouldAddAndGetEpic() {
         int EpicId = taskManager.addEpic(epic);
         Epic epicTest = taskManager.getEpic(EpicId);
         assertEquals(epicTest, epic, "addAndGetEpic не работает");
     }
+
     @Test
     void shouldUpdateEpicAndGetListEpic() {
         int epicId = taskManager.addEpic(epic);
@@ -65,6 +73,7 @@ class InMemoryTaskManagerTest {
         Epic epicTest2 = test.get(0);
         assertEquals(epicTest2.getStatus(), Status.IN_PROGRESS, "Эпик не обновился");
     }
+
     @Test
     void shouldRemoveEpic() {
         taskManager.removeAllSubtask();
@@ -74,17 +83,19 @@ class InMemoryTaskManagerTest {
         Epic epicTest = taskManager.getEpic(epic.getId());
         assertNull(epicTest, "removeEpic не работает");
         ArrayList<Subtask> test = taskManager.getListSubtask();
-        assertEquals(test.size(),0, "Не убирает подзадачи, которые связаны с эпиком");
+        assertEquals(test.size(), 0, "Не убирает подзадачи, которые связаны с эпиком");
 
     }
+
     @Test
     void shouldRemoveAllEpic() {
         int epicId = taskManager.addEpic(epic);
         int epicId2 = taskManager.addEpic(epic2);
         taskManager.removeAllEpic();
         ArrayList<Epic> test = taskManager.getListEpic();
-        assertEquals(test.size(),0, "removeAllEpic не работает");
+        assertEquals(test.size(), 0, "removeAllEpic не работает");
     }
+
     @Test
     void shouldAddAndGetSubtask() {
         int epicId = taskManager.addEpic(epic);
@@ -92,6 +103,7 @@ class InMemoryTaskManagerTest {
         Subtask subtaskTest = taskManager.getSubtask(subtaskId);
         assertEquals(subtaskTest, subtask, "addAndGetSubtask не работает");
     }
+
     @Test
     void shouldUpdateSubtaskAndGetListSubtask() {
         int epicId = taskManager.addEpic(epic);
@@ -105,28 +117,32 @@ class InMemoryTaskManagerTest {
         Subtask subtaskTest2 = test.get(0);
         assertEquals(subtaskTest2.getStatus(), Status.IN_PROGRESS, "Подзадача не обновилась");
     }
+
     @Test
     void shouldRemoveSubtask() {
         taskManager.removeSubtask(subtask.getId());
         Subtask subtaskTest = taskManager.getSubtask(subtask.getId());
         assertNull(subtaskTest, "removeSubtask не работает");
     }
+
     @Test
     void shouldRemoveAllSubtask() {
         int subtaskId = taskManager.addTask(subtask);
         int subtaskId2 = taskManager.addTask(subtask2);
         taskManager.removeAllSubtask();
         ArrayList<Subtask> test = taskManager.getListSubtask();
-        assertEquals(test.size(),0, "removeAllSubtask не работает");
+        assertEquals(test.size(), 0, "removeAllSubtask не работает");
     }
+
     @Test
     void shouldGetSubtaskOfEpic() {
         taskManager = new InMemoryTaskManager();
         int epicId = taskManager.addEpic(epic);
         int subId = taskManager.addSubtask(subtask);
-        ArrayList<Subtask> test = taskManager.getSubtaskOfEpic(epicId);
+        ArrayList<Subtask> test = taskManager.getSubtasksOfEpic(epicId);
         assertEquals(test.size(), 1, "getSubtaskOfEpic не работает");
     }
+
     @Test
     void shouldCheckStatusEpic() {
         taskManager = new InMemoryTaskManager();
@@ -151,4 +167,31 @@ class InMemoryTaskManagerTest {
         taskManager.updateSubtask(subTest);
         assertEquals(Status.DONE, test.getStatus(), "DONE должен быть");
     }
-}
+
+    @Test
+    public void checkUnchangeableOfTask() {
+        taskManager = new InMemoryTaskManager();
+        Task expectedTask = new Task("Name1", "Description1", Status.NEW);
+        int testId1 = taskManager.addTask(expectedTask);
+        Task actualTask = taskManager.getTask(testId1);
+        assertEquals(expectedTask, actualTask, "Добавляемая задача отличается от той, что была в итоге добавлена");
+    }
+
+    @Test
+    public void checkHistoryCorrect() {
+        taskManager = new InMemoryTaskManager();
+        Task testTask = new Task("Name1", "Description1", Status.NEW);
+        int testId1 = taskManager.addTask(testTask);
+        Task expectedTask1 = taskManager.getTask(testId1);
+        testTask.setStatus(Status.IN_PROGRESS);
+        taskManager.updateTask(testTask);
+        Task expectedTask2 = taskManager.getTask(testId1);
+        ArrayList<Task> history = taskManager.getHistory();
+        assertEquals(expectedTask2, history.get(1), "Последняя добавленная задача имеет отличающиеся параметры");
+        assertEquals(expectedTask1, history.get(0), "Первая добавленная задача имеет отличающиеся параметры");
+    }
+
+    @Test
+    void conflictId() { // "Нет тестов на конфликты между заданным и сгенерированным id" в этой программе нет возможности
+    } // задавать ID вручную, они генерируются и задаются автоматически при создании объекта в зависимости от хеша, поэтому
+} // сделать тест на конфликт заданного и сгенерированного ID нельзя. Если я чего-то не понимаю, прошу объясните подробнее

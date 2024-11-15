@@ -1,3 +1,9 @@
+import managers.InMemoryTaskManager;
+import tasks.Epic;
+import tasks.Status;
+import tasks.Subtask;
+import tasks.Task;
+
 import java.util.ArrayList;
 
 public class Main {
@@ -12,7 +18,7 @@ public class Main {
         System.out.println(task1 + "  " + task2);
 
         System.out.println("Check History");
-        ArrayList<Task> history = taskManager.historyManager.getHistory();
+        ArrayList<Task> history = taskManager.getHistory();
         for (Task t : history) {
             System.out.println(t);
         }
@@ -21,7 +27,7 @@ public class Main {
         Task newTask = taskManager.getTask(idTask1);
 
         System.out.println("Check History2");
-        ArrayList<Task> history2 = taskManager.historyManager.getHistory();
+        ArrayList<Task> history2 = taskManager.getHistory();
         for (Task t : history) {
             System.out.println(t);
         }
@@ -53,7 +59,7 @@ public class Main {
         Epic newEpic3 = taskManager.getEpic(idEpic1);
 
         System.out.println("Check History3");
-        ArrayList<Task> history3 = taskManager.historyManager.getHistory();
+        ArrayList<Task> history3 = taskManager.getHistory();
         for (Task t : history) {
             System.out.println(t);
         }
@@ -61,14 +67,14 @@ public class Main {
 
         Epic newEpic4 = taskManager.getEpic(idEpic2);
         System.out.println("Check History4");
-        ArrayList<Task> history4 = taskManager.historyManager.getHistory();
+        ArrayList<Task> history4 = taskManager.getHistory();
         for (Task t : history) {
             System.out.println(t);
         }
         System.out.println(history4.size());
 
         System.out.println("Add" + taskManager);
-        System.out.println(taskManager.getSubtaskOfEpic(idEpic1));
+        System.out.println(taskManager.getSubtasksOfEpic(idEpic1));
         newTask.setStatus(Status.IN_PROGRESS);
         taskManager.updateTask(newTask);
         Subtask newSubtask = taskManager.getSubtask(idSub2);
