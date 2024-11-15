@@ -4,6 +4,8 @@ import org.junit.jupiter.api.Test;
 import tasks.Status;
 import tasks.Task;
 
+import java.util.ArrayList;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 class TaskTest {
@@ -79,4 +81,31 @@ class TaskTest {
             assertEquals(test1, test2, "Объекты tasks.Task не равны");
         }
     }
-}
+
+    @Test
+    public void checkUnchangeableOfTask() {
+        InMemoryTaskManager taskManager = new InMemoryTaskManager();
+        Task expectedTask = new Task("Name1", "Description1", Status.NEW);
+        int testId1 = taskManager.addTask(expectedTask);
+        Task actualTask = taskManager.getTask(testId1);
+        assertEquals(expectedTask, actualTask, "Добавляемая задача отличается от той, что была в итоге добавлена");
+    }
+
+    @Test
+    public void checkHistoryCorrect() {
+        InMemoryTaskManager taskManager = new InMemoryTaskManager();
+        Task testTask = new Task("Name1", "Description1", Status.NEW);
+        int testId1 = taskManager.addTask(testTask);
+        Task expectedTask1 = taskManager.getTask(testId1);
+        testTask.setStatus(Status.IN_PROGRESS);
+        taskManager.updateTask(testTask);
+        Task expectedTask2 = taskManager.getTask(testId1);
+        ArrayList<Task> history = taskManager.getHistory();
+        assertEquals(expectedTask2, history.get(1), "Последняя добавленная задача имеет отличающиеся параметры");
+        assertEquals(expectedTask1, history.get(0), "Первая добавленная задача имеет отличающиеся параметры");
+    }
+
+    @Test
+    void conflictId() { // "Нет тестов на конфликты между заданным и сгенерированным id" в этой программе нет возможности
+    } // задавать ID вручную, они генерируются и задаются автоматически при создании объекта в зависимости от хеша, поэтому
+} // сделать тест на конфликт заданного и сгенерированного ID нельзя. Если я чего-то не понимаю, прошу объясните подробнее
