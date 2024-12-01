@@ -62,6 +62,7 @@ class InMemoryHistoryManagerTest {
         assertEquals(test.getFirst(), epic, "Неправильный порядок истории в начале");
         assertEquals(test.getLast(), epic, "Неправильный порядок истории в начале");
     }
+
     @Test
     void shouldRemoveTasksFromHistory() {
         InMemoryHistoryManager inMemoryHistoryManager = new InMemoryHistoryManager();

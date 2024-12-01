@@ -20,11 +20,11 @@ public class Epic extends Task { // Прошу прочесть коммента
 
     public void removeSubtask(Integer id) { // Тоже самое только с удалением подзадачи из списка
         //if (!subtasksId.isEmpty()) {
-            if (subtasksId.contains(id)) {
-                //int index = subtasksId.indexOf(id);
-                //subtasksId.remove(index);
-                subtasksId.remove(id);
-            }
+        if (subtasksId.contains(id)) {
+            //int index = subtasksId.indexOf(id);
+            //subtasksId.remove(index);
+            subtasksId.remove(id);
+        }
         //}
     }
 

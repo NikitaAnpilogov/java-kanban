@@ -11,10 +11,12 @@ public class Node {
         this.idLastTask = idLastTask;
         this.task = task;
     }
+
     public Node(Task task, int idNextTask) {
         this.task = task;
         this.idNextTask = idNextTask;
     }
+
     public Node(Task task) {
         this.task = task;
     }
