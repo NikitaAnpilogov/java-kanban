@@ -60,7 +60,7 @@ class InMemoryHistoryManagerTest {
         ArrayList<Task> test = inMemoryHistoryManager.getHistory();
         assertEquals(test.size(), 3, "Не удаляет повторы в истории");
         assertEquals(test.getFirst(), epic, "Неправильный порядок истории в начале");
-        assertEquals(test.getLast(), epic, "Неправильный порядок истории в начале");
+        assertEquals(test.getLast(), subtask, "Неправильный порядок истории в конце");
     }
 
     @Test
@@ -77,6 +77,9 @@ class InMemoryHistoryManagerTest {
         assertEquals(test.size(), 2, "Не удалил задачу из истории");
         inMemoryHistoryManager.remove(epic.getId());
         test = inMemoryHistoryManager.getHistory();
-        assertEquals(test.size(), 2, "Не удалил епик и подзадачу из истории");
+        assertEquals(test.size(), 1, "Не удалил епик из истории");
+        inMemoryHistoryManager.remove(subtask.getId());
+        test = inMemoryHistoryManager.getHistory();
+        assertEquals(test.size(), 0, "Не удалил епик из истории");
     }
 }
