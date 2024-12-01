@@ -5,45 +5,17 @@ import tasks.Task;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class InMemoryHistoryManager implements HistoryManager {
-    private LinkedMap linkedMap;
-
-    public InMemoryHistoryManager() {
-        linkedMap = new LinkedMap();
-    }
-
-    @Override
-    public ArrayList<Task> getHistory() {
-        return linkedMap.getTasks();
-    }
-    
-    @Override
-    public <T extends Task> void add(T task) {
-        Task taskHistory = (Task) task;
-        if (linkedMap.getSize() == 0) {
-            linkedMap.addHead(task);
-        } else {
-            linkedMap.linkLast(task);
-        }
-    }
-
-    @Override
-    public void remove(int id) {
-        linkedMap.remove(id);
-    }
-}
-
-/*class LinkedMap {
+public class LinkedMap {
     private HashMap<Integer, Node> history = new HashMap<>();
     int lastId = -1;
 
-    void addHead(Task task) {
+    public void addHead(Task task) {
         Node node = new Node(task);
         history.put(task.getId(), node);
         lastId = task.getId();
     }
 
-    void linkLast(Task task) {
+    public void linkLast(Task task) {
         if (task.getId() == lastId) {
             return;
         }
@@ -80,7 +52,7 @@ public class InMemoryHistoryManager implements HistoryManager {
         history.put(task.getId(), node);
     }
 
-    ArrayList<Task> getTasks() {
+    public ArrayList<Task> getTasks() {
         ArrayList<Task> taskHistory = new ArrayList<>();
         Integer next = lastId;
         Task task;
@@ -99,11 +71,11 @@ public class InMemoryHistoryManager implements HistoryManager {
         return taskHistory;
     }
 
-    int getSize() {
+    public int getSize() {
         return history.size();
     }
 
-    void remove(int id) {
+    public void remove(int id) {
         Node deletedNode = history.get(id);
         if (deletedNode.getIdLastTask() == null && deletedNode.getIdNextTask() == null) {
             history.remove(id);
@@ -128,4 +100,4 @@ public class InMemoryHistoryManager implements HistoryManager {
             history.remove(id);
         }
     }
-}*/
+}
