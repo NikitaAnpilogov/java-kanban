@@ -1,6 +1,7 @@
 package tasks;
 
 import java.util.ArrayList;
+
 public class Epic extends Task { // Прошу прочесть комментарий
     private ArrayList<Integer> subtasksId; // В этом списке хранятся не сами подзадачи, а id подзадачи, которые закреплены за этим конкретным эпиком.
 
