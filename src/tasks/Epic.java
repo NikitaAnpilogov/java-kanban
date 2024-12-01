@@ -18,13 +18,14 @@ public class Epic extends Task { // Прошу прочесть коммента
         subtasksId.add(subtask.getId());
     }
 
-    public void removeSubtask(int id) { // Тоже самое только с удалением подзадачи из списка
-        if (!subtasksId.isEmpty()) {
+    public void removeSubtask(Integer id) { // Тоже самое только с удалением подзадачи из списка
+        //if (!subtasksId.isEmpty()) {
             if (subtasksId.contains(id)) {
-                int index = subtasksId.indexOf(id);
-                subtasksId.remove(index);
+                //int index = subtasksId.indexOf(id);
+                //subtasksId.remove(index);
+                subtasksId.remove(id);
             }
-        }
+        //}
     }
 
     public void removeSubtasks() { // Очищения списка id подзадач этого эпика

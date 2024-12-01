@@ -28,7 +28,7 @@ public class Main {
 
         System.out.println("Check History2");
         ArrayList<Task> history2 = taskManager.getHistory();
-        for (Task t : history) {
+        for (Task t : history2) {
             System.out.println(t);
         }
         System.out.println(history2.size());
@@ -60,7 +60,7 @@ public class Main {
 
         System.out.println("Check History3");
         ArrayList<Task> history3 = taskManager.getHistory();
-        for (Task t : history) {
+        for (Task t : history3) {
             System.out.println(t);
         }
         System.out.println(history3.size());
@@ -68,7 +68,7 @@ public class Main {
         Epic newEpic4 = taskManager.getEpic(idEpic2);
         System.out.println("Check History4");
         ArrayList<Task> history4 = taskManager.getHistory();
-        for (Task t : history) {
+        for (Task t : history4) {
             System.out.println(t);
         }
         System.out.println(history4.size());
@@ -81,10 +81,31 @@ public class Main {
         newSubtask.setStatus(Status.NEW);
         taskManager.updateSubtask(newSubtask);
         System.out.println("Update" + taskManager);
-        taskManager.removeTask(idTask1);
-        taskManager.removeSubtask(idSub1);
-        taskManager.removeEpic(idEpic2);
+        System.out.println("Check History5");
+        ArrayList<Task> history5 = taskManager.getHistory();
+        for (Task t : history5) {
+            System.out.println(t);
+        }
+        System.out.println(history5.size());
+        //taskManager.removeTask(idTask2);
+        //taskManager.removeTask(idTask1);
+        //taskManager.removeSubtask(idSub2);
+        //taskManager.removeEpic(idEpic2);
+        //taskManager.removeEpic(idEpic1);
+        //taskManager.addTask(task2);
+        //taskManager.getTask(idTask2);
+        //taskManager.getTask(idTask1);
+        //taskManager.getTask(idTask1);
+        taskManager.removeAllTask();
+        //taskManager.removeAllSubtask();
+        taskManager.removeAllEpic();
         System.out.println("Delete" + taskManager);
+        System.out.println("Check History6");
+        ArrayList<Task> history6 = taskManager.getHistory();
+        for (Task t : history6) {
+            System.out.println(t);
+        }
+        System.out.println(history6.size());
 
     }
 }

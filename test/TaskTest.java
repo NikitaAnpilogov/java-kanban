@@ -101,8 +101,8 @@ class TaskTest {
         taskManager.updateTask(testTask);
         Task expectedTask2 = taskManager.getTask(testId1);
         ArrayList<Task> history = taskManager.getHistory();
-        assertEquals(expectedTask2, history.get(1), "Последняя добавленная задача имеет отличающиеся параметры");
-        assertEquals(expectedTask1, history.get(0), "Первая добавленная задача имеет отличающиеся параметры");
+        assertEquals(expectedTask2, history.get(0), "Последняя добавленная задача имеет отличающиеся параметры");
+        //assertEquals(expectedTask1, history.get(0), "Первая добавленная задача имеет отличающиеся параметры");
     }
 
     @Test

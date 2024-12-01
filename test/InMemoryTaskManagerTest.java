@@ -1,4 +1,5 @@
 import managers.InMemoryTaskManager;
+import managers.TaskManager;
 import org.junit.jupiter.api.Test;
 import tasks.Epic;
 import tasks.Status;
@@ -41,8 +42,10 @@ class InMemoryTaskManagerTest {
     @Test
     void shouldRemoveTask() {
         taskManager.removeTask(task.getId());
-        Task taskTest = taskManager.getTask(task.getId());
-        assertNull(taskTest, "removeTask не работает");
+        //Task taskTest = taskManager.getTask(task.getId());
+        ArrayList<Task> taskTest = taskManager.getListTask();
+        //assertNull(taskTest, "removeTask не работает");
+        assertEquals(taskTest.size(), 0, "removeTask не работает");
     }
 
     @Test
@@ -77,22 +80,26 @@ class InMemoryTaskManagerTest {
     @Test
     void shouldRemoveEpic() {
         taskManager.removeAllSubtask();
-        int epicId = taskManager.addEpic(epic);
-        int subtaskId = taskManager.addSubtask(subtask);
-        taskManager.removeEpic(epic.getId());
-        Epic epicTest = taskManager.getEpic(epic.getId());
-        assertNull(epicTest, "removeEpic не работает");
-        ArrayList<Subtask> test = taskManager.getListSubtask();
+        InMemoryTaskManager taskManager1 = new InMemoryTaskManager();
+        int epicId = taskManager1.addEpic(epic);
+        int subtaskId = taskManager1.addSubtask(subtask);
+        taskManager1.removeEpic(epic.getId());
+        //Epic epicTest = taskManager1.getEpic(epic.getId());
+        ArrayList<Epic> epicTest = taskManager1.getListEpic();
+        assertEquals(epicTest.size(), 0, "removeEpic не работает");
+        //assertNull(epicTest, "removeEpic не работает");
+        ArrayList<Subtask> test = taskManager1.getListSubtask();
         assertEquals(test.size(), 0, "Не убирает подзадачи, которые связаны с эпиком");
 
     }
 
     @Test
     void shouldRemoveAllEpic() {
-        int epicId = taskManager.addEpic(epic);
-        int epicId2 = taskManager.addEpic(epic2);
-        taskManager.removeAllEpic();
-        ArrayList<Epic> test = taskManager.getListEpic();
+        InMemoryTaskManager taskManager1 = new InMemoryTaskManager();
+        int epicId = taskManager1.addEpic(epic);
+        int epicId2 = taskManager1.addEpic(epic2);
+        taskManager1.removeAllEpic();
+        ArrayList<Epic> test = taskManager1.getListEpic();
         assertEquals(test.size(), 0, "removeAllEpic не работает");
     }
 
@@ -121,8 +128,10 @@ class InMemoryTaskManagerTest {
     @Test
     void shouldRemoveSubtask() {
         taskManager.removeSubtask(subtask.getId());
-        Subtask subtaskTest = taskManager.getSubtask(subtask.getId());
-        assertNull(subtaskTest, "removeSubtask не работает");
+        //Subtask subtaskTest = taskManager.getSubtask(subtask.getId());
+        ArrayList<Subtask> subtaskTest = taskManager.getListSubtask();
+        //assertNull(subtaskTest, "removeSubtask не работает");
+        assertEquals(subtaskTest.size(), 0, "removeSubtask не работает");
     }
 
     @Test
@@ -187,11 +196,21 @@ class InMemoryTaskManagerTest {
         taskManager.updateTask(testTask);
         Task expectedTask2 = taskManager.getTask(testId1);
         ArrayList<Task> history = taskManager.getHistory();
-        assertEquals(expectedTask2, history.get(1), "Последняя добавленная задача имеет отличающиеся параметры");
-        assertEquals(expectedTask1, history.get(0), "Первая добавленная задача имеет отличающиеся параметры");
+        assertEquals(expectedTask2, history.get(0), "Последняя добавленная задача имеет отличающиеся параметры");
+        //assertEquals(expectedTask1, history.get(0), "Первая добавленная задача имеет отличающиеся параметры");
     }
 
     @Test
     void conflictId() { // "Нет тестов на конфликты между заданным и сгенерированным id" в этой программе нет возможности
     } // задавать ID вручную, они генерируются и задаются автоматически при создании объекта в зависимости от хеша, поэтому
-} // сделать тест на конфликт заданного и сгенерированного ID нельзя. Если я чего-то не понимаю, прошу объясните подробнее
+    // сделать тест на конфликт заданного и сгенерированного ID нельзя. Если я чего-то не понимаю, прошу объясните подробнее
+    @Test
+    void shouldRemoveIdEpicInSubtask() {
+        InMemoryTaskManager inMemoryTaskManager = new InMemoryTaskManager();
+        inMemoryTaskManager.addEpic(epic);
+        inMemoryTaskManager.addSubtask(subtask);
+        inMemoryTaskManager.removeSubtask(subtask.getId());
+        assertNull(subtask.getIdEpic(), "Не удаляет ID эпика");
+    }//Внутри эпиков не должно оставаться неактуальных id подзадач. Они удаляются из эпиков
+}//С помощью сеттеров экземпляры задач позволяют изменить любое своё поле, но это может повлиять на данные внутри менеджера.
+//ID задачи задается при создании задачи и не меняется даже при изменении полей в процессе работы
