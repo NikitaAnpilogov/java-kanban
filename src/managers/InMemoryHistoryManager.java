@@ -3,7 +3,6 @@ package managers;
 import tasks.Task;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 public class InMemoryHistoryManager implements HistoryManager {
     private LinkedMap linkedMap;
@@ -16,7 +15,7 @@ public class InMemoryHistoryManager implements HistoryManager {
     public ArrayList<Task> getHistory() {
         return linkedMap.getTasks();
     }
-    
+
     @Override
     public <T extends Task> void add(T task) {
         Task taskHistory = (Task) task;
