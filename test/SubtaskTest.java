@@ -60,7 +60,13 @@ class SubtaskTest {
 
     @Test
     void shouldTestToString() {
-        String testCheck = "tasks.Task{name='Name1', description='Description1', id=459190274, status=NEW}";
+        String testCheck = "Subtask{" +
+                "idEpic=" + test1.getIdEpic() +
+                ", name='" + test1.getName() + '\'' +
+                ", description='" + test1.getDescription() + '\'' +
+                ", id=" + test1.getId() +
+                ", status=" + test1.getStatus() +
+                '}';
         assertEquals(testCheck, test1.toString(), "Не работает toString");
     }
 
