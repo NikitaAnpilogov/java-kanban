@@ -1,6 +1,7 @@
 package tasks;
 
 import java.util.ArrayList;
+
 public class Epic extends Task { // Прошу прочесть комментарий
     private ArrayList<Integer> subtasksId; // В этом списке хранятся не сами подзадачи, а id подзадачи, которые закреплены за этим конкретным эпиком.
 
@@ -18,13 +19,14 @@ public class Epic extends Task { // Прошу прочесть коммента
         subtasksId.add(subtask.getId());
     }
 
-    public void removeSubtask(int id) { // Тоже самое только с удалением подзадачи из списка
-        if (!subtasksId.isEmpty()) {
-            if (subtasksId.contains(id)) {
-                int index = subtasksId.indexOf(id);
-                subtasksId.remove(index);
-            }
+    public void removeSubtask(Integer id) { // Тоже самое только с удалением подзадачи из списка
+        //if (!subtasksId.isEmpty()) {
+        if (subtasksId.contains(id)) {
+            //int index = subtasksId.indexOf(id);
+            //subtasksId.remove(index);
+            subtasksId.remove(id);
         }
+        //}
     }
 
     public void removeSubtasks() { // Очищения списка id подзадач этого эпика
