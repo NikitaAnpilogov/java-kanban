@@ -7,12 +7,14 @@ public class Task {
     protected String description;
     protected Integer id;
     protected Status status;
+    protected Type type;
 
     public Task(String name, String description, Status status) {
         this.name = name;
         this.description = description;
         this.id = this.hashCode();
         this.status = status;
+        this.type = Type.TASK;
     }
 
     public Task(String name, String description) {
@@ -20,6 +22,7 @@ public class Task {
         this.description = description;
         this.id = this.hashCode();
         this.status = Status.NEW;
+        this.type = Type.TASK;
     }
 
     @Override
@@ -91,5 +94,9 @@ public class Task {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public Type getType() {
+        return type;
     }
 }
