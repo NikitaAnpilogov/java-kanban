@@ -3,17 +3,10 @@ package managers;
 import tasks.*;
 
 import java.io.*;
-import java.net.URI;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
-
-import static java.nio.file.Files.readAllLines;
 
 public class FileBackedTaskManager extends InMemoryTaskManager {
     private File fileForSave;
@@ -53,7 +46,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
     }
 
     private void save() {
-        try (FileWriter fileWriter = new FileWriter(fileForSave.toString())) {
+        try (FileWriter fileWriter = new FileWriter(fileForSave.toString(), StandardCharsets.UTF_8)) {
             ArrayList<Task> tasks = getListTask();
             for (Task task : tasks) {
                 String line = toStringForFile(task);
