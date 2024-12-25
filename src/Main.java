@@ -110,7 +110,7 @@ public class Main {
         System.out.println(history6.size());
 
         //File file = new File("c:\\Users\\nikan\\IdeaProjects\\java-kanban", "file.CSV");
-        File file = new File( "file.CSV");
+        File file = new File("file.CSV");
         FileBackedTaskManager fileBackedTaskManager = new FileBackedTaskManager(file);
         //fileBackedTaskManager.addTask(task1);
         //fileBackedTaskManager.addTask(task2);
