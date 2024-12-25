@@ -109,10 +109,11 @@ public class Main {
         }
         System.out.println(history6.size());
 
-        File file = new File("c:\\Users\\nikan\\IdeaProjects\\java-kanban", "file.CSV");
+        //File file = new File("c:\\Users\\nikan\\IdeaProjects\\java-kanban", "file.CSV");
+        File file = new File( "file.CSV");
         FileBackedTaskManager fileBackedTaskManager = new FileBackedTaskManager(file);
-        fileBackedTaskManager.addTask(task1);
-        fileBackedTaskManager.addTask(task2);
+        //fileBackedTaskManager.addTask(task1);
+        //fileBackedTaskManager.addTask(task2);
         /*fileBackedTaskManager.addEpic(epic1);
         fileBackedTaskManager.addEpic(epic2);
         subtask1 = new Subtask("NameSubtask1", "DescriptionSubtask1", Status.NEW, idEpic1);

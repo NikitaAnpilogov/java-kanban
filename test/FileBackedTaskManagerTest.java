@@ -46,7 +46,7 @@ public class FileBackedTaskManagerTest {
     }
 
     @Test
-    void shouldSaveAndLoadEmpty() {
+    void shouldSaveEmpty() {
         fileBackedTaskManager = new FileBackedTaskManager(file);
         fileBackedTaskManager.removeAllTask();//Сохраняю пустой файл
         int test = 0;
@@ -56,11 +56,18 @@ public class FileBackedTaskManagerTest {
         assertEquals(tasks.size(), test, "Число задач не равно нулю");
         assertEquals(epics.size(), test, "Число эпиков не равно нулю");
         assertEquals(subtasks.size(), test, "Число подзадач не равно нулю");//Значит файл пуст
+    }
+
+    @Test
+    void shouldLoadEmpty() {
+        fileBackedTaskManager = new FileBackedTaskManager(file);
+        fileBackedTaskManager.removeAllTask();//Сохраняю пустой файл
+        int test = 0;
         FileBackedTaskManager fileBackedTaskManagerForLoad = FileBackedTaskManager.loadFromFile(file);
         System.out.println(fileBackedTaskManagerForLoad.toString());
-        tasks = fileBackedTaskManagerForLoad.getListTask();
-        epics = fileBackedTaskManagerForLoad.getListEpic();
-        subtasks = fileBackedTaskManagerForLoad.getListSubtask();
+        ArrayList<Task> tasks = fileBackedTaskManagerForLoad.getListTask();
+        ArrayList<Epic> epics = fileBackedTaskManagerForLoad.getListEpic();
+        ArrayList<Subtask> subtasks = fileBackedTaskManagerForLoad.getListSubtask();
         assertEquals(tasks.size(), test, "Число задач после загрузки не равно нулю");
         assertEquals(epics.size(), test, "Число эпиков после загрузки не равно нулю");
         assertEquals(subtasks.size(), test, "Число подзадач после загрузки не равно нулю");
