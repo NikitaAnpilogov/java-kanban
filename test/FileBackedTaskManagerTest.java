@@ -1,17 +1,13 @@
 import managers.FileBackedTaskManager;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import tasks.Epic;
-import tasks.Status;
-import tasks.Subtask;
-import tasks.Task;
+import tasks.*;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class FileBackedTaskManagerTest {
     private FileBackedTaskManager fileBackedTaskManager;
@@ -28,7 +24,7 @@ public class FileBackedTaskManagerTest {
         try {
             file = File.createTempFile("Test", ".CSV");
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new ManagerSaveException("Ошибка");
         }
     }
 
@@ -71,5 +67,13 @@ public class FileBackedTaskManagerTest {
         assertEquals(tasks.size(), test, "Число задач после загрузки не равно нулю");
         assertEquals(epics.size(), test, "Число эпиков после загрузки не равно нулю");
         assertEquals(subtasks.size(), test, "Число подзадач после загрузки не равно нулю");
+    }
+
+    @Test
+    void testException() {
+        Exception exception = assertThrows(ManagerSaveException.class, () -> {
+            throw new ManagerSaveException("Exception");
+        });
+        assertEquals("Exception", exception.getMessage());
     }
 }

@@ -1,5 +1,7 @@
 package tasks;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.Objects;
 
 public class Task {
@@ -8,6 +10,28 @@ public class Task {
     protected Integer id;
     protected Status status;
     protected Type type;
+    protected Duration duration; // Duration.ZERO = default
+    protected LocalDateTime startTime; // LocalDateTime.MAX = default
+
+    public Task(String name, String description, Status status, Duration duration, LocalDateTime startTime) {
+        this.name = name;
+        this.description = description;
+        this.id = this.hashCode();
+        this.status = status;
+        this.type = Type.TASK;
+        this.duration = duration;
+        this.startTime = startTime;
+    }
+
+    public Task(String name, String description, Status status, Duration duration) {
+        this.name = name;
+        this.description = description;
+        this.id = this.hashCode();
+        this.status = status;
+        this.type = Type.TASK;
+        this.duration = duration;
+        this.startTime = LocalDateTime.MAX;
+    }
 
     public Task(String name, String description, Status status) {
         this.name = name;
@@ -15,6 +39,8 @@ public class Task {
         this.id = this.hashCode();
         this.status = status;
         this.type = Type.TASK;
+        this.duration = Duration.ZERO;
+        this.startTime = LocalDateTime.MAX;
     }
 
     public Task(String name, String description) {
@@ -23,6 +49,8 @@ public class Task {
         this.id = this.hashCode();
         this.status = Status.NEW;
         this.type = Type.TASK;
+        this.duration = Duration.ZERO;
+        this.startTime = LocalDateTime.MAX;
     }
 
     @Override
@@ -48,23 +76,19 @@ public class Task {
             hash = hash + description.hashCode();
         }
         hash *= 31;
-        /*if (id != null) {
-            hash = hash + id.hashCode();
-        }
-        hash *= 31;
-        if (status != null) {
-            hash = hash + status.hashCode();
-        }*/
         return hash;
     }
 
     @Override
     public String toString() {
-        return "tasks.Task{" +
+        return "Task{" +
                 "name='" + name + '\'' +
                 ", description='" + description + '\'' +
                 ", id=" + id +
                 ", status=" + status +
+                ", type=" + type +
+                ", duration=" + duration +
+                ", startTime=" + startTime +
                 '}';
     }
 
@@ -98,5 +122,29 @@ public class Task {
 
     public Type getType() {
         return type;
+    }
+
+    public LocalDateTime getEndTime() {
+        if (startTime != LocalDateTime.MAX) {
+            return (startTime.plus(duration));
+        } else {
+            return startTime;
+        }
+    }
+
+    public Duration getDuration() {
+        return duration;
+    }
+
+    public void setDuration(Duration duration) {
+        this.duration = duration;
+    }
+
+    public LocalDateTime getStartTime() {
+        return startTime;
+    }
+
+    public void setStartTime(LocalDateTime startTime) {
+        this.startTime = startTime;
     }
 }

@@ -82,4 +82,70 @@ class InMemoryHistoryManagerTest {
         test = inMemoryHistoryManager.getHistory();
         assertEquals(test.size(), 0, "Не удалил епик из истории");
     }
+
+    @Test
+    void checkEmptyHistory() {
+        InMemoryHistoryManager inMemoryHistoryManager = new InMemoryHistoryManager();
+        int expectedSizeHistory = 0;
+        assertEquals(inMemoryHistoryManager.getHistory().size(), expectedSizeHistory, "История должна быть пуста");
+    }
+
+    @Test
+    void checkDoubleTaskInHistory() {
+        InMemoryHistoryManager inMemoryHistoryManager = new InMemoryHistoryManager();
+        Task task = new Task("Name1", "Description1", Status.NEW);
+        Epic epic = new Epic("Name2", "Description2");
+        Subtask subtask = new Subtask("Name3", "Description3", Status.IN_PROGRESS, epic.getId());
+        inMemoryHistoryManager.add(task);
+        inMemoryHistoryManager.add(epic);
+        inMemoryHistoryManager.add(subtask);
+        inMemoryHistoryManager.add(task);
+        int expectedSizeHistoryWithDouble = 3;
+        assertEquals(inMemoryHistoryManager.getHistory().size(), expectedSizeHistoryWithDouble, "Пропустил дубль");
+    }
+
+    @Test
+    void checkRemoveFirst() {
+        InMemoryHistoryManager inMemoryHistoryManager = new InMemoryHistoryManager();
+        Task task = new Task("Name1", "Description1", Status.NEW);
+        Epic epic = new Epic("Name2", "Description2");
+        Subtask subtask = new Subtask("Name3", "Description3", Status.IN_PROGRESS, epic.getId());
+        inMemoryHistoryManager.add(task);
+        inMemoryHistoryManager.add(epic);
+        inMemoryHistoryManager.add(subtask);
+        inMemoryHistoryManager.remove(subtask.getId());
+        String expectedTask = "Name2";
+        ArrayList<Task> tasks = new ArrayList<>(inMemoryHistoryManager.getHistory());
+        assertEquals(tasks.getFirst().getName(), expectedTask, "Удалил не первый элемент");
+    }
+
+    @Test
+    void checkRemoveLast() {
+        InMemoryHistoryManager inMemoryHistoryManager = new InMemoryHistoryManager();
+        Task task = new Task("Name1", "Description1", Status.NEW);
+        Epic epic = new Epic("Name2", "Description2");
+        Subtask subtask = new Subtask("Name3", "Description3", Status.IN_PROGRESS, epic.getId());
+        inMemoryHistoryManager.add(task);
+        inMemoryHistoryManager.add(epic);
+        inMemoryHistoryManager.add(subtask);
+        inMemoryHistoryManager.remove(task.getId());
+        String expectedTask = "Name2";
+        ArrayList<Task> tasks = new ArrayList<>(inMemoryHistoryManager.getHistory());
+        assertEquals(tasks.getLast().getName(), expectedTask, "Удалил не последний элемент");
+    }
+
+    @Test
+    void checkRemoveIntermediate() {
+        InMemoryHistoryManager inMemoryHistoryManager = new InMemoryHistoryManager();
+        Task task = new Task("Name1", "Description1", Status.NEW);
+        Epic epic = new Epic("Name2", "Description2");
+        Subtask subtask = new Subtask("Name3", "Description3", Status.IN_PROGRESS, epic.getId());
+        inMemoryHistoryManager.add(task);
+        inMemoryHistoryManager.add(epic);
+        inMemoryHistoryManager.add(subtask);
+        inMemoryHistoryManager.remove(epic.getId());
+        String expectedTask = "Name1";
+        ArrayList<Task> tasks = new ArrayList<>(inMemoryHistoryManager.getHistory());
+        assertEquals(tasks.get(1).getName(), expectedTask, "Удалил не средний элемент");
+    }
 }

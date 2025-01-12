@@ -4,6 +4,7 @@ import org.junit.jupiter.api.Test;
 import tasks.Status;
 import tasks.Task;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -59,7 +60,7 @@ class TaskTest {
 
     @Test
     void shouldTestToString() {
-        String testCheck = "tasks.Task{name='Name1', description='Description1', id=459190274, status=NEW}";
+        String testCheck = "Task{name='Name1', description='Description1', id=459190274, status=NEW, type=TASK, duration=PT0S, startTime=+999999999-12-31T23:59:59.999999999}";
         assertEquals(testCheck, test1.toString(), "Не работает toString");
     }
 
@@ -106,6 +107,11 @@ class TaskTest {
     }
 
     @Test
-    void conflictId() { // "Нет тестов на конфликты между заданным и сгенерированным id" в этой программе нет возможности
-    } // задавать ID вручную, они генерируются и задаются автоматически при создании объекта в зависимости от хеша, поэтому
-} // сделать тест на конфликт заданного и сгенерированного ID нельзя. Если я чего-то не понимаю, прошу объясните подробнее
+    public void shouldGetEndTime() {
+        InMemoryTaskManager taskManager = new InMemoryTaskManager();
+        Task testTask = new Task("Name1", "Description1", Status.NEW);
+        int testId1 = taskManager.addTask(testTask);
+        LocalDateTime expectedTime = LocalDateTime.MAX;
+        assertEquals(testTask.getEndTime(), expectedTime, "getEndTime не работает");
+    }
+}

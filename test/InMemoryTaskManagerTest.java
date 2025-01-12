@@ -10,7 +10,7 @@ import java.util.ArrayList;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class InMemoryTaskManagerTest {
+class InMemoryTaskManagerTest extends TaskManagerTest {
     InMemoryTaskManager taskManager = new InMemoryTaskManager();
     Task task = new Task("Name1", "Description1", Status.NEW);
     Epic epic = new Epic("Name2", "Description2");
@@ -212,6 +212,5 @@ class InMemoryTaskManagerTest {
         inMemoryTaskManager.addSubtask(subtask);
         inMemoryTaskManager.removeSubtask(subtask.getId());
         assertNull(subtask.getIdEpic(), "Не удаляет ID эпика");
-    }//Внутри эпиков не должно оставаться неактуальных id подзадач. Они удаляются из эпиков
-}//С помощью сеттеров экземпляры задач позволяют изменить любое своё поле, но это может повлиять на данные внутри менеджера.
-//ID задачи задается при создании задачи и не меняется даже при изменении полей в процессе работы
+    }
+}
