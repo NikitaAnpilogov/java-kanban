@@ -4,7 +4,9 @@ import org.junit.jupiter.api.Test;
 import tasks.Epic;
 import tasks.Status;
 import tasks.Subtask;
+import tasks.Task;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -60,7 +62,7 @@ class EpicTest {
 
     @Test
     void shouldTestToString() {
-        String testCheck = "tasks.Epic{name='Name1', status=NEW, id=459190274, description='Description1', subtasksId=[]}";
+        String testCheck = "Epic{subtasksId=[], endTime=-999999999-01-01T00:00, name='Name1', description='Description1', id=459190274, status=NEW, type=EPIC, duration=PT0S, startTime=+999999999-12-31T23:59:59.999999999}";
         assertEquals(testCheck, test1.toString(), "Не работает toString");
     }
 
@@ -108,6 +110,11 @@ class EpicTest {
     }
 
     @Test
-    void shouldEpicCantAddInThisEpicLikeSubtask() { // Добавить Эпик в этот же эпик в виде подзадачи
-    } // В этой реализации программы нельзя, так как мы присвиваем эпику подзадачу во время
-} // Создания подзадачи, и для ее создания нам нужен ID созданного эпика
+    public void shouldGetEndTime() {
+        InMemoryTaskManager taskManager = new InMemoryTaskManager();
+        Epic testTask = new Epic("Name1", "Description1");
+        int testId1 = taskManager.addEpic(testTask);
+        LocalDateTime expectedTime = LocalDateTime.MIN;
+        assertEquals(testTask.getEndTime(), expectedTime, "getEndTime не работает");
+    }
+}

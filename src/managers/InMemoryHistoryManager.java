@@ -4,6 +4,8 @@ import tasks.Task;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Objects;
 
 public class InMemoryHistoryManager implements HistoryManager {
     private HashMap<Integer, Node> history;
@@ -15,7 +17,7 @@ public class InMemoryHistoryManager implements HistoryManager {
     }
 
     @Override
-    public ArrayList<Task> getHistory() {
+    public List<Task> getHistory() {
         return getTasks();
     }
 
@@ -49,7 +51,7 @@ public class InMemoryHistoryManager implements HistoryManager {
         history.put(task.getId(), node);
     }
 
-    private ArrayList<Task> getTasks() {
+    private List<Task> getTasks() {
         ArrayList<Task> taskHistory = new ArrayList<>();
         Node node = last;
         while (node != null) {
@@ -85,5 +87,31 @@ public class InMemoryHistoryManager implements HistoryManager {
             last = null;
             first = null;
         }
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 17;
+        if (first != null) {
+            hash = hash + first.hashCode();
+        }
+        hash *= 31;
+        if (last != null) {
+            hash = hash + last.hashCode();
+        }
+        hash *= 31;
+        if (history != null) {
+            hash = hash + history.hashCode();
+        }
+        hash *= 31;
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        InMemoryHistoryManager that = (InMemoryHistoryManager) o;
+        return Objects.equals(history, that.history) && Objects.equals(first, that.first) && Objects.equals(last, that.last);
     }
 }
