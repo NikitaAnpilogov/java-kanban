@@ -9,7 +9,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class FileBackedTaskManagerTest extends TaskManagerTest {
+public class FileBackedTaskManagerTest {
     private FileBackedTaskManager fileBackedTaskManager;
     private Task task;
     private Epic epic;
