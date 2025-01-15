@@ -4,8 +4,10 @@ import org.junit.jupiter.api.Test;
 import tasks.Status;
 import tasks.Task;
 
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -101,7 +103,7 @@ class TaskTest {
         testTask.setStatus(Status.IN_PROGRESS);
         taskManager.updateTask(testTask);
         Task expectedTask2 = taskManager.getTask(testId1);
-        ArrayList<Task> history = taskManager.getHistory();
+        List<Task> history = taskManager.getHistory();
         assertEquals(expectedTask2, history.get(0), "Последняя добавленная задача имеет отличающиеся параметры");
         //assertEquals(expectedTask1, history.get(0), "Первая добавленная задача имеет отличающиеся параметры");
     }
@@ -113,5 +115,12 @@ class TaskTest {
         int testId1 = taskManager.addTask(testTask);
         LocalDateTime expectedTime = LocalDateTime.MAX;
         assertEquals(testTask.getEndTime(), expectedTime, "getEndTime не работает");
+        Duration duration = Duration.ofMinutes(30);
+        LocalDateTime time = LocalDateTime.of(2000,1, 1, 10, 0);
+        expectedTime = LocalDateTime.of(2000,1, 1, 10, 30);
+        testTask.setDuration(duration);
+        testTask.setStartTime(time);
+        taskManager.addTask(testTask);
+        assertEquals(testTask.getEndTime(), expectedTime, "EndTime не работает");
     }
 }

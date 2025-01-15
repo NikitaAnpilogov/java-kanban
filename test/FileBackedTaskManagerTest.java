@@ -5,11 +5,11 @@ import tasks.*;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class FileBackedTaskManagerTest {
+public class FileBackedTaskManagerTest extends TaskManagerTest {
     private FileBackedTaskManager fileBackedTaskManager;
     private Task task;
     private Epic epic;
@@ -46,9 +46,9 @@ public class FileBackedTaskManagerTest {
         fileBackedTaskManager = new FileBackedTaskManager(file);
         fileBackedTaskManager.removeAllTask();//Сохраняю пустой файл
         int test = 0;
-        ArrayList<Task> tasks = fileBackedTaskManager.getListTask();
-        ArrayList<Epic> epics = fileBackedTaskManager.getListEpic();
-        ArrayList<Subtask> subtasks = fileBackedTaskManager.getListSubtask();
+        List<Task> tasks = fileBackedTaskManager.getListTask();
+        List<Epic> epics = fileBackedTaskManager.getListEpic();
+        List<Subtask> subtasks = fileBackedTaskManager.getListSubtask();
         assertEquals(tasks.size(), test, "Число задач не равно нулю");
         assertEquals(epics.size(), test, "Число эпиков не равно нулю");
         assertEquals(subtasks.size(), test, "Число подзадач не равно нулю");//Значит файл пуст
@@ -61,9 +61,9 @@ public class FileBackedTaskManagerTest {
         int test = 0;
         FileBackedTaskManager fileBackedTaskManagerForLoad = FileBackedTaskManager.loadFromFile(file);
         System.out.println(fileBackedTaskManagerForLoad.toString());
-        ArrayList<Task> tasks = fileBackedTaskManagerForLoad.getListTask();
-        ArrayList<Epic> epics = fileBackedTaskManagerForLoad.getListEpic();
-        ArrayList<Subtask> subtasks = fileBackedTaskManagerForLoad.getListSubtask();
+        List<Task> tasks = fileBackedTaskManagerForLoad.getListTask();
+        List<Epic> epics = fileBackedTaskManagerForLoad.getListEpic();
+        List<Subtask> subtasks = fileBackedTaskManagerForLoad.getListSubtask();
         assertEquals(tasks.size(), test, "Число задач после загрузки не равно нулю");
         assertEquals(epics.size(), test, "Число эпиков после загрузки не равно нулю");
         assertEquals(subtasks.size(), test, "Число подзадач после загрузки не равно нулю");

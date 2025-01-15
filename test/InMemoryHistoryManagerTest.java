@@ -1,4 +1,6 @@
 import managers.InMemoryHistoryManager;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import tasks.Epic;
 import tasks.Status;
@@ -6,22 +8,38 @@ import tasks.Subtask;
 import tasks.Task;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 class InMemoryHistoryManagerTest {
+    InMemoryHistoryManager inMemoryHistoryManager;
+    Task task;
+    Epic epic;
+    Subtask subtask;
 
-    @Test
-    void shouldAddAndGetHistory() {
-        InMemoryHistoryManager inMemoryHistoryManager = new InMemoryHistoryManager();
-        Task task = new Task("Name1", "Description1", Status.NEW);
-        Epic epic = new Epic("Name2", "Description2");
-        Subtask subtask = new Subtask("Name3", "Description3", Status.IN_PROGRESS, epic.getId());
+    @BeforeEach
+    void setUp() {
+        inMemoryHistoryManager = new InMemoryHistoryManager();
+        task = new Task("Name1", "Description1", Status.NEW);
+        epic = new Epic("Name2", "Description2");
+        subtask = new Subtask("Name3", "Description3", Status.IN_PROGRESS, epic.getId());
         inMemoryHistoryManager.add(task);
         inMemoryHistoryManager.add(epic);
         inMemoryHistoryManager.add(subtask);
+    }
+
+    @AfterEach
+    void afterEach() {
+        inMemoryHistoryManager.remove(task.getId());
+        inMemoryHistoryManager.remove(epic.getId());
+        inMemoryHistoryManager.remove(subtask.getId());
+    }
+
+    @Test
+    void shouldAddAndGetHistory() {
         int test1 = 3;
-        ArrayList<Task> test = inMemoryHistoryManager.getHistory();
+        List<Task> test = inMemoryHistoryManager.getHistory();
         assertNotNull(test, "getHistory не работает");
         assertEquals(test1, test.size(), "Не все задачи отобразились в истории");
         Task tas = test.get(2);
@@ -31,14 +49,6 @@ class InMemoryHistoryManagerTest {
         assertEquals(tas.getName(), epic.getName(), "Неправильный порядок истории, не отобразился эпик");
         tas = test.get(0);
         assertEquals(tas.getName(), subtask.getName(), "Неправильный порядок истории в конце, не отобразилась подзадача");
-        /*for (int i = 0; i < 3; i++) {
-            inMemoryHistoryManager.add(task);
-            inMemoryHistoryManager.add(epic);
-            inMemoryHistoryManager.add(subtask);
-        }
-        test = inMemoryHistoryManager.getHistory();
-        int test2 = 10;
-        assertEquals(test2, test.size(), "Неправильный размер истории, должно быть 10");*/
         inMemoryHistoryManager.add(task);
         test = inMemoryHistoryManager.getHistory();
         tas = test.get(0);
@@ -48,16 +58,9 @@ class InMemoryHistoryManagerTest {
 
     @Test
     void shouldCorrectOrderOfHistory() {
-        InMemoryHistoryManager inMemoryHistoryManager = new InMemoryHistoryManager();
-        Task task = new Task("Name1", "Description1", Status.NEW);
-        Epic epic = new Epic("Name2", "Description2");
-        Subtask subtask = new Subtask("Name3", "Description3", Status.IN_PROGRESS, epic.getId());
         inMemoryHistoryManager.add(task);
         inMemoryHistoryManager.add(epic);
-        inMemoryHistoryManager.add(subtask);
-        inMemoryHistoryManager.add(task);
-        inMemoryHistoryManager.add(epic);
-        ArrayList<Task> test = inMemoryHistoryManager.getHistory();
+        List<Task> test = inMemoryHistoryManager.getHistory();
         assertEquals(test.size(), 3, "Не удаляет повторы в истории");
         assertEquals(test.getFirst(), epic, "Неправильный порядок истории в начале");
         assertEquals(test.getLast(), subtask, "Неправильный порядок истории в конце");
@@ -65,15 +68,8 @@ class InMemoryHistoryManagerTest {
 
     @Test
     void shouldRemoveTasksFromHistory() {
-        InMemoryHistoryManager inMemoryHistoryManager = new InMemoryHistoryManager();
-        Task task = new Task("Name1", "Description1", Status.NEW);
-        Epic epic = new Epic("Name2", "Description2");
-        Subtask subtask = new Subtask("Name3", "Description3", Status.IN_PROGRESS, epic.getId());
-        inMemoryHistoryManager.add(task);
-        inMemoryHistoryManager.add(epic);
-        inMemoryHistoryManager.add(subtask);
         inMemoryHistoryManager.remove(task.getId());
-        ArrayList<Task> test = inMemoryHistoryManager.getHistory();
+        List<Task> test = inMemoryHistoryManager.getHistory();
         assertEquals(test.size(), 2, "Не удалил задачу из истории");
         inMemoryHistoryManager.remove(epic.getId());
         test = inMemoryHistoryManager.getHistory();
@@ -85,20 +81,13 @@ class InMemoryHistoryManagerTest {
 
     @Test
     void checkEmptyHistory() {
-        InMemoryHistoryManager inMemoryHistoryManager = new InMemoryHistoryManager();
+        InMemoryHistoryManager inMemoryHistoryManagerTest = new InMemoryHistoryManager();
         int expectedSizeHistory = 0;
-        assertEquals(inMemoryHistoryManager.getHistory().size(), expectedSizeHistory, "История должна быть пуста");
+        assertEquals(inMemoryHistoryManagerTest.getHistory().size(), expectedSizeHistory, "История должна быть пуста");
     }
 
     @Test
     void checkDoubleTaskInHistory() {
-        InMemoryHistoryManager inMemoryHistoryManager = new InMemoryHistoryManager();
-        Task task = new Task("Name1", "Description1", Status.NEW);
-        Epic epic = new Epic("Name2", "Description2");
-        Subtask subtask = new Subtask("Name3", "Description3", Status.IN_PROGRESS, epic.getId());
-        inMemoryHistoryManager.add(task);
-        inMemoryHistoryManager.add(epic);
-        inMemoryHistoryManager.add(subtask);
         inMemoryHistoryManager.add(task);
         int expectedSizeHistoryWithDouble = 3;
         assertEquals(inMemoryHistoryManager.getHistory().size(), expectedSizeHistoryWithDouble, "Пропустил дубль");
@@ -106,13 +95,6 @@ class InMemoryHistoryManagerTest {
 
     @Test
     void checkRemoveFirst() {
-        InMemoryHistoryManager inMemoryHistoryManager = new InMemoryHistoryManager();
-        Task task = new Task("Name1", "Description1", Status.NEW);
-        Epic epic = new Epic("Name2", "Description2");
-        Subtask subtask = new Subtask("Name3", "Description3", Status.IN_PROGRESS, epic.getId());
-        inMemoryHistoryManager.add(task);
-        inMemoryHistoryManager.add(epic);
-        inMemoryHistoryManager.add(subtask);
         inMemoryHistoryManager.remove(subtask.getId());
         String expectedTask = "Name2";
         ArrayList<Task> tasks = new ArrayList<>(inMemoryHistoryManager.getHistory());
@@ -121,13 +103,6 @@ class InMemoryHistoryManagerTest {
 
     @Test
     void checkRemoveLast() {
-        InMemoryHistoryManager inMemoryHistoryManager = new InMemoryHistoryManager();
-        Task task = new Task("Name1", "Description1", Status.NEW);
-        Epic epic = new Epic("Name2", "Description2");
-        Subtask subtask = new Subtask("Name3", "Description3", Status.IN_PROGRESS, epic.getId());
-        inMemoryHistoryManager.add(task);
-        inMemoryHistoryManager.add(epic);
-        inMemoryHistoryManager.add(subtask);
         inMemoryHistoryManager.remove(task.getId());
         String expectedTask = "Name2";
         ArrayList<Task> tasks = new ArrayList<>(inMemoryHistoryManager.getHistory());
@@ -136,13 +111,6 @@ class InMemoryHistoryManagerTest {
 
     @Test
     void checkRemoveIntermediate() {
-        InMemoryHistoryManager inMemoryHistoryManager = new InMemoryHistoryManager();
-        Task task = new Task("Name1", "Description1", Status.NEW);
-        Epic epic = new Epic("Name2", "Description2");
-        Subtask subtask = new Subtask("Name3", "Description3", Status.IN_PROGRESS, epic.getId());
-        inMemoryHistoryManager.add(task);
-        inMemoryHistoryManager.add(epic);
-        inMemoryHistoryManager.add(subtask);
         inMemoryHistoryManager.remove(epic.getId());
         String expectedTask = "Name1";
         ArrayList<Task> tasks = new ArrayList<>(inMemoryHistoryManager.getHistory());

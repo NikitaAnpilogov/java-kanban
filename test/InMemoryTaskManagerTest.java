@@ -1,12 +1,13 @@
 import managers.InMemoryTaskManager;
-import managers.TaskManager;
 import org.junit.jupiter.api.Test;
 import tasks.Epic;
 import tasks.Status;
 import tasks.Subtask;
 import tasks.Task;
 
-import java.util.ArrayList;
+import java.time.Duration;
+import java.time.LocalDateTime;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -32,7 +33,7 @@ class InMemoryTaskManagerTest extends TaskManagerTest {
         Task taskTest = taskManager.getTask(taskId);
         taskTest.setStatus(Status.IN_PROGRESS);
         taskManager.updateTask(taskTest);
-        ArrayList<Task> test = taskManager.getListTask();
+        List<Task> test = taskManager.getListTask();
         assertNotNull(test, "getListTask не работает");
         assertEquals(test.size(), 1, "Задача не обновилась, а добавилась как дубль");
         Task taskTest2 = test.get(0);
@@ -42,9 +43,7 @@ class InMemoryTaskManagerTest extends TaskManagerTest {
     @Test
     void shouldRemoveTask() {
         taskManager.removeTask(task.getId());
-        //Task taskTest = taskManager.getTask(task.getId());
-        ArrayList<Task> taskTest = taskManager.getListTask();
-        //assertNull(taskTest, "removeTask не работает");
+        List<Task> taskTest = taskManager.getListTask();
         assertEquals(taskTest.size(), 0, "removeTask не работает");
     }
 
@@ -53,7 +52,7 @@ class InMemoryTaskManagerTest extends TaskManagerTest {
         int taskId = taskManager.addTask(task);
         int taskId2 = taskManager.addTask(task2);
         taskManager.removeAllTask();
-        ArrayList<Task> test = taskManager.getListTask();
+        List<Task> test = taskManager.getListTask();
         assertEquals(test.size(), 0, "removeAllTask не работает");
     }
 
@@ -70,7 +69,7 @@ class InMemoryTaskManagerTest extends TaskManagerTest {
         Epic epicTest = taskManager.getEpic(epicId);
         epicTest.setStatus(Status.IN_PROGRESS);
         taskManager.updateEpic(epicTest);
-        ArrayList<Epic> test = taskManager.getListEpic();
+        List<Epic> test = taskManager.getListEpic();
         assertNotNull(test, "getListEpic не работает");
         assertEquals(test.size(), 1, "Эпик не обновился, а добавился как дубль");
         Epic epicTest2 = test.get(0);
@@ -84,11 +83,9 @@ class InMemoryTaskManagerTest extends TaskManagerTest {
         int epicId = taskManager1.addEpic(epic);
         int subtaskId = taskManager1.addSubtask(subtask);
         taskManager1.removeEpic(epic.getId());
-        //Epic epicTest = taskManager1.getEpic(epic.getId());
-        ArrayList<Epic> epicTest = taskManager1.getListEpic();
+        List<Epic> epicTest = taskManager1.getListEpic();
         assertEquals(epicTest.size(), 0, "removeEpic не работает");
-        //assertNull(epicTest, "removeEpic не работает");
-        ArrayList<Subtask> test = taskManager1.getListSubtask();
+        List<Subtask> test = taskManager1.getListSubtask();
         assertEquals(test.size(), 0, "Не убирает подзадачи, которые связаны с эпиком");
 
     }
@@ -99,7 +96,7 @@ class InMemoryTaskManagerTest extends TaskManagerTest {
         int epicId = taskManager1.addEpic(epic);
         int epicId2 = taskManager1.addEpic(epic2);
         taskManager1.removeAllEpic();
-        ArrayList<Epic> test = taskManager1.getListEpic();
+        List<Epic> test = taskManager1.getListEpic();
         assertEquals(test.size(), 0, "removeAllEpic не работает");
     }
 
@@ -118,7 +115,7 @@ class InMemoryTaskManagerTest extends TaskManagerTest {
         Subtask subtaskTest = taskManager.getSubtask(subtaskId);
         subtaskTest.setStatus(Status.IN_PROGRESS);
         taskManager.updateSubtask(subtaskTest);
-        ArrayList<Subtask> test = taskManager.getListSubtask();
+        List<Subtask> test = taskManager.getListSubtask();
         assertNotNull(test, "getListSubtask не работает");
         assertEquals(test.size(), 1, "Подзадача не обновилась, а добавилась как дубль");
         Subtask subtaskTest2 = test.get(0);
@@ -129,7 +126,7 @@ class InMemoryTaskManagerTest extends TaskManagerTest {
     void shouldRemoveSubtask() {
         taskManager.removeSubtask(subtask.getId());
         //Subtask subtaskTest = taskManager.getSubtask(subtask.getId());
-        ArrayList<Subtask> subtaskTest = taskManager.getListSubtask();
+        List<Subtask> subtaskTest = taskManager.getListSubtask();
         //assertNull(subtaskTest, "removeSubtask не работает");
         assertEquals(subtaskTest.size(), 0, "removeSubtask не работает");
     }
@@ -139,7 +136,7 @@ class InMemoryTaskManagerTest extends TaskManagerTest {
         int subtaskId = taskManager.addTask(subtask);
         int subtaskId2 = taskManager.addTask(subtask2);
         taskManager.removeAllSubtask();
-        ArrayList<Subtask> test = taskManager.getListSubtask();
+        List<Subtask> test = taskManager.getListSubtask();
         assertEquals(test.size(), 0, "removeAllSubtask не работает");
     }
 
@@ -148,7 +145,7 @@ class InMemoryTaskManagerTest extends TaskManagerTest {
         taskManager = new InMemoryTaskManager();
         int epicId = taskManager.addEpic(epic);
         int subId = taskManager.addSubtask(subtask);
-        ArrayList<Subtask> test = taskManager.getSubtasksOfEpic(epicId);
+        List<Subtask> test = taskManager.getSubtasksOfEpic(epicId);
         assertEquals(test.size(), 1, "getSubtaskOfEpic не работает");
     }
 
@@ -195,16 +192,11 @@ class InMemoryTaskManagerTest extends TaskManagerTest {
         testTask.setStatus(Status.IN_PROGRESS);
         taskManager.updateTask(testTask);
         Task expectedTask2 = taskManager.getTask(testId1);
-        ArrayList<Task> history = taskManager.getHistory();
+        List<Task> history = taskManager.getHistory();
         assertEquals(expectedTask2, history.get(0), "Последняя добавленная задача имеет отличающиеся параметры");
         //assertEquals(expectedTask1, history.get(0), "Первая добавленная задача имеет отличающиеся параметры");
     }
 
-    @Test
-    void conflictId() { // "Нет тестов на конфликты между заданным и сгенерированным id" в этой программе нет возможности
-    } // задавать ID вручную, они генерируются и задаются автоматически при создании объекта в зависимости от хеша, поэтому
-
-    // сделать тест на конфликт заданного и сгенерированного ID нельзя. Если я чего-то не понимаю, прошу объясните подробнее
     @Test
     void shouldRemoveIdEpicInSubtask() {
         InMemoryTaskManager inMemoryTaskManager = new InMemoryTaskManager();
@@ -212,5 +204,70 @@ class InMemoryTaskManagerTest extends TaskManagerTest {
         inMemoryTaskManager.addSubtask(subtask);
         inMemoryTaskManager.removeSubtask(subtask.getId());
         assertNull(subtask.getIdEpic(), "Не удаляет ID эпика");
+    }
+
+    @Test
+    void checkCrossTime1() {
+        taskManager = new InMemoryTaskManager();
+        Duration duration = Duration.ofMinutes(30);
+        LocalDateTime time = LocalDateTime.of(2000, 1, 1, 10, 0);
+        task.setDuration(duration);
+        task.setStartTime(time);
+        duration = Duration.ofMinutes(10);
+        time = time.plus(duration);
+        task2.setDuration(duration);
+        task2.setStartTime(time);
+        taskManager.addTask(task);
+        taskManager.addTask(task2);
+        List sortedTasks = taskManager.getPrioritizedTasks();
+        int expectedSize = 1;
+        System.out.println(task);
+        System.out.println(task2);
+        System.out.println(taskManager);
+        assertEquals(taskManager.getPrioritizedTasks().size(), expectedSize, "Задача внутри другой задачи");
+        taskManager = new InMemoryTaskManager();
+        task.setStartTime(time);
+        task.setDuration(duration);
+        time = time.minus(duration);
+        duration = Duration.ofMinutes(30);
+        task2.setDuration(duration);
+        task2.setStartTime(time);
+        taskManager.addTask(task);
+        taskManager.addTask(task2);
+        System.out.println(taskManager);
+        assertEquals(taskManager.getPrioritizedTasks().size(), expectedSize, "Снаружи");
+    }
+
+    @Test
+    void checkCrossTime2() {
+        LocalDateTime time1 = LocalDateTime.of(2000, 1, 1, 10, 0);
+        Duration duration1 = Duration.ofMinutes(30);
+        LocalDateTime time2 = LocalDateTime.of(2000, 1, 1, 10, 10);
+        LocalDateTime time3 = LocalDateTime.of(2000, 1, 1, 9, 40);
+        task.setStartTime(time1);
+        task.setDuration(duration1);
+        task2.setStartTime(time2);
+        task2.setDuration(duration1);
+        taskManager = new InMemoryTaskManager();
+        taskManager.addTask(task);
+        taskManager.addTask(task2);
+        int expectedSize = 1;
+        System.out.println(taskManager);
+        assertEquals(expectedSize, taskManager.getPrioritizedTasks().size(), "После");
+        task2.setStartTime(time3);
+        taskManager = new InMemoryTaskManager();
+        taskManager.addTask(task);
+        taskManager.addTask(task2);
+        System.out.println(taskManager);
+        assertEquals(expectedSize, taskManager.getPrioritizedTasks().size(), "Перед");
+    }
+
+    @Test
+    void checkAddDefaultTimeInSortedTasks() {
+        taskManager = new InMemoryTaskManager();
+        Task taskTest = new Task("name", "desc");
+        taskManager.addTask(taskTest);
+        int expectedSize = 0;
+        assertEquals(expectedSize, taskManager.getPrioritizedTasks().size(), "пропустил default");
     }
 }

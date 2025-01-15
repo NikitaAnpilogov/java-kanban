@@ -7,8 +7,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.time.Duration;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List; // "не хватает метода. который очищает все мапы" - не совсем понял какой метод требуется. Я добавил 3 метода, которые полностью удаляют таски сабтаски и эпики, соответственно они полностью очищают мапы
+import java.util.List;
 
 public class FileBackedTaskManager extends InMemoryTaskManager {
     private File fileForSave;
@@ -123,17 +122,17 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
 
     private void save() {
         try (FileWriter fileWriter = new FileWriter(fileForSave.toString(), StandardCharsets.UTF_8)) {
-            ArrayList<Task> tasks = getListTask();
+            List<Task> tasks = getListTask();
             for (Task task : tasks) {
                 String line = toStringForFile(task);
                 fileWriter.write(line + "\n");
             }
-            ArrayList<Epic> epics = getListEpic();
+            List<Epic> epics = getListEpic();
             for (Epic epic : epics) {
                 String line = toStringForFile(epic);
                 fileWriter.write(line + "\n");
             }
-            ArrayList<Subtask> subtasks = getListSubtask();
+            List<Subtask> subtasks = getListSubtask();
             for (Subtask subtask : subtasks) {
                 String line = toStringForFile(subtask);
                 fileWriter.write(line + "\n");
@@ -177,8 +176,6 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         } else {
             int id = Integer.parseInt(array[7]);
             task = new Subtask(array[2], array[4], status, id, duration, time);
-            //task.setDuration(duration);
-            //task.setStartTime(time);
         }
         return task;
     }

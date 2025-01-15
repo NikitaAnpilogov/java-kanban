@@ -62,7 +62,10 @@ public class Task {
         return Objects.equals(name, newTask.name) &&
                 Objects.equals(description, newTask.description) &&
                 Objects.equals(id, newTask.id) &&
-                Objects.equals(status, newTask.status);
+                Objects.equals(status, newTask.status) &&
+                Objects.equals(type, newTask.type) &&
+                Objects.equals(duration, newTask.duration) &&
+                Objects.equals(startTime, newTask.startTime);
     }
 
     @Override

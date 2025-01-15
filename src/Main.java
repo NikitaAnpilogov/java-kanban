@@ -142,6 +142,10 @@ public class Main {
         System.out.println(fileBackedTaskManager);
         time = time.minusMinutes(60);
         Task thirdTask = new Task("ThirdName", "ThirdDescription", Status.NEW, duration, time);
+        duration = Duration.ofMinutes(10);
+        time = time.plus(duration);
+        Task ask = new Task("Name4", "Description4", Status.NEW, duration, time);
+        fileBackedTaskManager.addTask(ask);
         fileBackedTaskManager.addTask(thirdTask);
         System.out.println(fileBackedTaskManager);
         Epic secondEpic = new Epic("SecondNameEpic", "SecondDescriptionEpic");

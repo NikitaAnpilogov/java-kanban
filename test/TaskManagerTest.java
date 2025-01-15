@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class TaskManagerTest<T extends TaskManager> {
+public abstract class TaskManagerTest<T extends TaskManager> {
     InMemoryTaskManager taskManager;
     Task task = new Task("Name1", "Description1", Status.NEW);
     Epic epic = new Epic("Name2", "Description2");
@@ -83,6 +83,7 @@ public class TaskManagerTest<T extends TaskManager> {
     void checkCrossTime() {
         Duration duration = Duration.ofMinutes(30);
         LocalDateTime time = LocalDateTime.of(2000, 1, 1, 10, 0);
+        taskManager = new InMemoryTaskManager();
         task.setDuration(duration);
         task.setStartTime(time);
         time = time.plusHours(1);
@@ -95,6 +96,7 @@ public class TaskManagerTest<T extends TaskManager> {
         taskManager.addEpic(epic);
         taskManager.addSubtask(subtask);
         int expectedSizeSortedTask = 2; // subtask не попадет в этот список так как пересечение интервалов
+        System.out.println("Valid : " + taskManager);
         assertEquals(taskManager.getPrioritizedTasks().size(), expectedSizeSortedTask, "Валидация пересечения интервалов не работает");
     }
 }
