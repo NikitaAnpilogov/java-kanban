@@ -5,8 +5,9 @@ import tasks.*;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
-import java.util.ArrayList;
-import java.util.List; // "не хватает метода. который очищает все мапы" - не совсем понял какой метод требуется. Я добавил 3 метода, которые полностью удаляют таски сабтаски и эпики, соответственно они полностью очищают мапы
+import java.time.Duration;
+import java.time.LocalDateTime;
+import java.util.List;
 
 public class FileBackedTaskManager extends InMemoryTaskManager {
     private File fileForSave;
@@ -121,17 +122,17 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
 
     private void save() {
         try (FileWriter fileWriter = new FileWriter(fileForSave.toString(), StandardCharsets.UTF_8)) {
-            ArrayList<Task> tasks = getListTask();
+            List<Task> tasks = getListTask();
             for (Task task : tasks) {
                 String line = toStringForFile(task);
                 fileWriter.write(line + "\n");
             }
-            ArrayList<Epic> epics = getListEpic();
+            List<Epic> epics = getListEpic();
             for (Epic epic : epics) {
                 String line = toStringForFile(epic);
                 fileWriter.write(line + "\n");
             }
-            ArrayList<Subtask> subtasks = getListSubtask();
+            List<Subtask> subtasks = getListSubtask();
             for (Subtask subtask : subtasks) {
                 String line = toStringForFile(subtask);
                 fileWriter.write(line + "\n");
@@ -143,7 +144,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
 
     private String toStringForFile(Task task) {
         String line = task.getId() + "," + task.getType() + "," + task.getName() + "," + task.getStatus() + ","
-                + task.getDescription();
+                + task.getDescription() + "," + task.getDuration().toSeconds() + "," + task.getStartTime().toString();
         if (task.getType() == Type.SUBTASK) {
             Subtask subtask = (Subtask) task;
             line = line + "," + subtask.getIdEpic();
@@ -164,13 +165,17 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         }
         Task task;
         String type = array[1];
+        long second = Long.parseLong(array[5]);
+        Duration duration = Duration.ofSeconds(second);
+        LocalDateTime time = LocalDateTime.parse(array[6]);
         if (type.equals("TASK")) {
-            task = new Task(array[2], array[4], status);
+            task = new Task(array[2], array[4], status, duration, time);
         } else if (type.equals("EPIC")) {
-            task = new Epic(array[2], array[4]);
+            LocalDateTime endTime = time.plus(duration);
+            task = new Epic(array[2], array[4], status, duration, time, endTime);
         } else {
-            int id = Integer.parseInt(array[5]);
-            task = new Subtask(array[2], array[4], status, id);
+            int id = Integer.parseInt(array[7]);
+            task = new Subtask(array[2], array[4], status, id, duration, time);
         }
         return task;
     }

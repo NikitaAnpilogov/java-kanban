@@ -4,7 +4,10 @@ import org.junit.jupiter.api.Test;
 import tasks.Status;
 import tasks.Task;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -59,7 +62,7 @@ class TaskTest {
 
     @Test
     void shouldTestToString() {
-        String testCheck = "tasks.Task{name='Name1', description='Description1', id=459190274, status=NEW}";
+        String testCheck = "Task{name='Name1', description='Description1', id=459190274, status=NEW, type=TASK, duration=PT0S, startTime=+999999999-12-31T23:59:59.999999999}";
         assertEquals(testCheck, test1.toString(), "Не работает toString");
     }
 
@@ -100,12 +103,24 @@ class TaskTest {
         testTask.setStatus(Status.IN_PROGRESS);
         taskManager.updateTask(testTask);
         Task expectedTask2 = taskManager.getTask(testId1);
-        ArrayList<Task> history = taskManager.getHistory();
+        List<Task> history = taskManager.getHistory();
         assertEquals(expectedTask2, history.get(0), "Последняя добавленная задача имеет отличающиеся параметры");
         //assertEquals(expectedTask1, history.get(0), "Первая добавленная задача имеет отличающиеся параметры");
     }
 
     @Test
-    void conflictId() { // "Нет тестов на конфликты между заданным и сгенерированным id" в этой программе нет возможности
-    } // задавать ID вручную, они генерируются и задаются автоматически при создании объекта в зависимости от хеша, поэтому
-} // сделать тест на конфликт заданного и сгенерированного ID нельзя. Если я чего-то не понимаю, прошу объясните подробнее
+    public void shouldGetEndTime() {
+        InMemoryTaskManager taskManager = new InMemoryTaskManager();
+        Task testTask = new Task("Name1", "Description1", Status.NEW);
+        int testId1 = taskManager.addTask(testTask);
+        LocalDateTime expectedTime = LocalDateTime.MAX;
+        assertEquals(testTask.getEndTime(), expectedTime, "getEndTime не работает");
+        Duration duration = Duration.ofMinutes(30);
+        LocalDateTime time = LocalDateTime.of(2000,1, 1, 10, 0);
+        expectedTime = LocalDateTime.of(2000,1, 1, 10, 30);
+        testTask.setDuration(duration);
+        testTask.setStartTime(time);
+        taskManager.addTask(testTask);
+        assertEquals(testTask.getEndTime(), expectedTime, "EndTime не работает");
+    }
+}

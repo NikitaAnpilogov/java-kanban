@@ -1,17 +1,17 @@
 import managers.FileBackedTaskManager;
-import managers.InMemoryTaskManager;
 import tasks.Epic;
 import tasks.Status;
 import tasks.Subtask;
 import tasks.Task;
 
 import java.io.File;
-import java.util.ArrayList;
+import java.time.Duration;
+import java.time.LocalDateTime;
 
 public class Main {
 
     public static void main(String[] args) {
-        InMemoryTaskManager taskManager = new InMemoryTaskManager();
+        /*InMemoryTaskManager taskManager = new InMemoryTaskManager();
         Task task1 = new Task("Name1", "Description1", Status.NEW);
         Task task2 = new Task("Name2", "Description2", Status.IN_PROGRESS);
         int idTask1 = taskManager.addTask(task1);
@@ -108,7 +108,7 @@ public class Main {
             System.out.println(t);
         }
         System.out.println(history6.size());
-
+*/
         //File file = new File("c:\\Users\\nikan\\IdeaProjects\\java-kanban", "file.CSV");
         File file = new File("file.CSV");
         FileBackedTaskManager fileBackedTaskManager = new FileBackedTaskManager(file);
@@ -121,7 +121,43 @@ public class Main {
         fileBackedTaskManager.addSubtask(subtask1);
         fileBackedTaskManager.addSubtask(subtask2);
         System.out.println(fileBackedTaskManager.toString());*/
-        FileBackedTaskManager fileBackedTaskManagerNew = FileBackedTaskManager.loadFromFile(file);
-        System.out.println(fileBackedTaskManagerNew.toString());
+        //FileBackedTaskManager fileBackedTaskManagerNew = FileBackedTaskManager.loadFromFile(file);
+        //System.out.println(fileBackedTaskManagerNew.toString());
+        System.out.println("Test Solution 8");
+        Duration duration = Duration.ofMinutes(30);
+        LocalDateTime time = LocalDateTime.of(2000, 1, 1, 10, 0);
+        Task firstTask = new Task("FirstName", "FirstDescription", Status.NEW, duration, time);
+        time = time.minusHours(1);
+        Task secondTask = new Task("SecondName", "SecondDescription", Status.IN_PROGRESS, duration, time);
+        Epic firstEpic = new Epic("FirstNameEpic", "FirstDescriptionEpic");
+        time = time.plusHours(2);
+        Subtask firstSubtask = new Subtask("FirstNameSub", "FirstDescriptionSub", Status.NEW, firstEpic.getId(), duration, time);
+        time = time.plusHours(1);
+        Subtask secondSubtask = new Subtask("SecondNameSub", "SecondDescriptionSub", Status.IN_PROGRESS, firstEpic.getId(), duration, time);
+        fileBackedTaskManager.addTask(firstTask);
+        fileBackedTaskManager.addTask(secondTask);
+        fileBackedTaskManager.addEpic(firstEpic);
+        fileBackedTaskManager.addSubtask(firstSubtask);
+        fileBackedTaskManager.addSubtask(secondSubtask);
+        System.out.println(fileBackedTaskManager);
+        time = time.minusMinutes(60);
+        Task thirdTask = new Task("ThirdName", "ThirdDescription", Status.NEW, duration, time);
+        duration = Duration.ofMinutes(10);
+        time = time.plus(duration);
+        Task ask = new Task("Name4", "Description4", Status.NEW, duration, time);
+        fileBackedTaskManager.addTask(ask);
+        fileBackedTaskManager.addTask(thirdTask);
+        System.out.println(fileBackedTaskManager);
+        Epic secondEpic = new Epic("SecondNameEpic", "SecondDescriptionEpic");
+        time = time.minusHours(3);
+        Subtask thirdSubtask = new Subtask("ThirdNameSub", "ThirdDescriptionSub", Status.NEW, secondEpic.getId(), duration, time);
+        fileBackedTaskManager.addEpic(secondEpic);
+        fileBackedTaskManager.addSubtask(thirdSubtask);
+        System.out.println(fileBackedTaskManager);
+        System.out.println("Test stream API");
+        System.out.println(fileBackedTaskManager.getSubtasksOfEpic(firstEpic.getId()));
+        FileBackedTaskManager newFileBackedTaskManager = FileBackedTaskManager.loadFromFile(file);
+        System.out.println(newFileBackedTaskManager);
+
     }
 }

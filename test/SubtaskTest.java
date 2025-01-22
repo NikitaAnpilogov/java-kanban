@@ -4,6 +4,9 @@ import org.junit.jupiter.api.Test;
 import tasks.Epic;
 import tasks.Status;
 import tasks.Subtask;
+import tasks.Task;
+
+import java.time.LocalDateTime;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -60,13 +63,7 @@ class SubtaskTest {
 
     @Test
     void shouldTestToString() {
-        String testCheck = "Subtask{" +
-                "idEpic=" + test1.getIdEpic() +
-                ", name='" + test1.getName() + '\'' +
-                ", description='" + test1.getDescription() + '\'' +
-                ", id=" + test1.getId() +
-                ", status=" + test1.getStatus() +
-                '}';
+        String testCheck = "Subtask{idEpic=459191266, name='Name1', description='Description1', id=459190274, status=NEW, type=SUBTASK, duration=PT0S, startTime=+999999999-12-31T23:59:59.999999999}";
         assertEquals(testCheck, test1.toString(), "Не работает toString");
     }
 
@@ -106,6 +103,13 @@ class SubtaskTest {
     }
 
     @Test
-    void shouldSubtaskCantAddInThisSubtaskLikeEpic() { // Сделать подзадачу своим же эпиком нельзя
-    } // Так как при создании подзадачи требуется ID эпика, ID подзадачи туда поставить нельзя
-} // Так как ID подзадачи можно получить только после объявления
+    public void shouldGetEndTime() {
+        InMemoryTaskManager taskManager = new InMemoryTaskManager();
+        Epic testEpic = new Epic("Name1", "Description1");
+        int testIdEpic = taskManager.addEpic(testEpic);
+        Subtask testTask = new Subtask("Name1", "Description1", Status.NEW, testIdEpic);
+        int testId1 = taskManager.addSubtask(testTask);
+        LocalDateTime expectedTime = LocalDateTime.MAX;
+        assertEquals(testTask.getEndTime(), expectedTime, "getEndTime не работает");
+    }
+}

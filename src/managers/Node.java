@@ -2,6 +2,8 @@ package managers;
 
 import tasks.Task;
 
+import java.util.Objects;
+
 public class Node {
     private Node nodeLast;
     private Node nodeNext;
@@ -43,5 +45,23 @@ public class Node {
 
     public Integer getIdTask() {
         return task.getId();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Node node = (Node) o;
+        return Objects.equals(nodeLast, node.nodeLast) && Objects.equals(nodeNext, node.nodeNext) && Objects.equals(task, node.task);
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 17;
+        if (task != null) {
+            hash = hash + task.hashCode();
+        }
+        hash *= 31;
+        return hash;
     }
 }
