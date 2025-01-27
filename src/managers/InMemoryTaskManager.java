@@ -1,5 +1,7 @@
 package managers;
 
+import exceptions.NotFoundException;
+import exceptions.TaskCrossException;
 import tasks.Epic;
 import tasks.Status;
 import tasks.Subtask;
@@ -84,7 +86,11 @@ public class InMemoryTaskManager implements TaskManager {
                 returnTask = tasks.get(id);
             }
         }
-        historyManager.add(returnTask);
+        if (returnTask == null) {
+            throw new NotFoundException("Task not found");
+        } else {
+            historyManager.add(returnTask);
+        }
         return returnTask;
     }
 
@@ -96,7 +102,11 @@ public class InMemoryTaskManager implements TaskManager {
                 returnEpic = epics.get(id);
             }
         }
-        historyManager.add(returnEpic);
+        if (returnEpic == null) {
+            throw new NotFoundException("Epic not found");
+        } else {
+            historyManager.add(returnEpic);
+        }
         return returnEpic;
     }
 
@@ -108,21 +118,29 @@ public class InMemoryTaskManager implements TaskManager {
                 returnSubtask = subtasks.get(id);
             }
         }
-        historyManager.add(returnSubtask);
+        if (returnSubtask == null) {
+            throw new NotFoundException("Subtask not found");
+        } else {
+            historyManager.add(returnSubtask);
+        }
         return returnSubtask;
     }
 
     @Override
-    public int addTask(Task task) {
-        int idTask = task.getId();
+    public Integer addTask(Task task) {
+        Integer idTask = task.getId();
         tasks.put(idTask, task);
         historyManager.add(task);
-        addTaskToSortedTasks(task);
+        try {
+            addTaskToSortedTasks(task);
+        } catch (TaskCrossException e) { // Обрабатываю ошибку тут, чтобы не обрабатывать каждый addTask на ошибку
+            idTask = null; // Проверяю пересечение нулем, если нуль, то задача пересекается
+        }
         return idTask;
     }
 
     @Override
-    public int addEpic(Epic epic) {
+    public Integer addEpic(Epic epic) {
         int idEpic = epic.getId();
         epics.put(idEpic, epic);
         historyManager.add(epic);
@@ -130,14 +148,18 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
-    public int addSubtask(Subtask subtask) {
-        int idSubtask = subtask.getId();
+    public Integer addSubtask(Subtask subtask) {
+        Integer idSubtask = subtask.getId();
         subtasks.put(idSubtask, subtask);
         historyManager.add(subtask);
-        addTaskToSortedTasks(subtask);
+        try {
+            addTaskToSortedTasks(subtask);
+        } catch (TaskCrossException e) { // Обрабатываю ошибку тут, чтобы не обрабатывать каждый addTask на ошибку
+            idSubtask = null; // Проверяю пересечение нулем, если нуль, то задача пересекается
+        }
         int idEpic = subtask.getIdEpic();
         checkStatusEpic(idEpic);
-        addTaskToSortedTasks(epics.get(idEpic));
+        //addTaskToSortedTasks(epics.get(idEpic));
         return idSubtask;
     }
 
@@ -153,12 +175,18 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
-    public void updateTask(Task task) {
+    public boolean updateTask(Task task) {
+        boolean isCross = false;
         int idTask = task.getId();
         if (tasks.containsKey(idTask)) {
             tasks.put(idTask, task);
-            addTaskToSortedTasks(task);
+            try {
+                addTaskToSortedTasks(task);
+            } catch (TaskCrossException e) { // Описал логику выше
+                isCross = true;
+            }
         }
+        return isCross;
     }
 
     @Override
@@ -170,15 +198,21 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
-    public void updateSubtask(Subtask subtask) {
+    public boolean updateSubtask(Subtask subtask) {
+        boolean isCross = false;
         int idSubtask = subtask.getId();
         if (subtasks.containsKey(idSubtask)) {
             subtasks.put(idSubtask, subtask);
-            addTaskToSortedTasks(subtask);
+            try {
+                addTaskToSortedTasks(subtask);
+            } catch (TaskCrossException e) { // Описал логику выше
+                isCross = true;
+            }
         }
         int idEpic = subtask.getIdEpic();
         checkStatusEpic(idEpic);
-        addTaskToSortedTasks(epics.get(idEpic));
+        //addTaskToSortedTasks(epics.get(idEpic));
+        return isCross;
     }
 
     @Override
@@ -225,6 +259,9 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public List<Subtask> getSubtasksOfEpic(int id) {
+        if (!epics.containsKey(id)) {
+            throw new NotFoundException("Epic not found");
+        }
         return subtasks.values().stream()
                 .filter(subtask -> (subtask.getIdEpic() == id))
                 .collect(Collectors.toList());
@@ -304,9 +341,12 @@ public class InMemoryTaskManager implements TaskManager {
         if (task.getStartTime().equals(LocalDateTime.MAX) || task.getDuration().equals(Duration.ZERO)) {
             return false;
         } else {
+            if (sortedTasks.contains(task)) { // Обнаружил, что если мы изменяем задачу и обновляем ее, то она не попадает в sortedTask
+                return true; // Перед стримом проверяем таску, если она уже есть в sortedTask, то сразу пропускаем ее
+            }
             LocalDateTime startTime = task.getStartTime();
             LocalDateTime endTime = task.getEndTime();
-            return sortedTasks.stream()
+            boolean isCross = sortedTasks.stream()
                     .filter(x -> (endTime.isAfter(x.getStartTime()) && endTime.isBefore(x.getEndTime())) ||
                             (startTime.isAfter(x.getStartTime()) && startTime.isBefore(x.getEndTime())) ||
                             (startTime.isAfter(x.getStartTime()) && endTime.isBefore(x.getEndTime())) ||
@@ -314,6 +354,10 @@ public class InMemoryTaskManager implements TaskManager {
                             (startTime.equals(x.getStartTime())) ||
                             (endTime.equals(x.getEndTime())))
                     .noneMatch(x -> true);
+            if (!isCross) { // Решил выбрасывать ошибку, если задачи пересекаются, и обрабатывать ошибку выше
+                throw new TaskCrossException("Task is crossing the other tasks");
+            }
+            return isCross;
         }
     }
 }

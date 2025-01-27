@@ -24,17 +24,17 @@ public interface TaskManager {
 
     Subtask getSubtask(int id);
 
-    int addTask(Task task);
+    Integer addTask(Task task);
 
-    int addEpic(Epic epic);
+    Integer addEpic(Epic epic);
 
-    int addSubtask(Subtask subtask);
+    Integer addSubtask(Subtask subtask);
 
-    void updateTask(Task task);
+    boolean updateTask(Task task);
 
     void updateEpic(Epic epic);
 
-    void updateSubtask(Subtask subtask);
+    boolean updateSubtask(Subtask subtask);
 
     void removeTask(int id);
 
