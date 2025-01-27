@@ -1,4 +1,4 @@
-import Server.*;
+import server.*;
 import com.sun.net.httpserver.HttpServer;
 import managers.Managers;
 import managers.TaskManager;

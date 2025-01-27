@@ -1,7 +1,7 @@
 package managers;
 
-import Server.DurationAdapter;
-import Server.LocalDateTimeAdapter;
+import server.DurationAdapter;
+import server.LocalDateTimeAdapter;
 import com.google.gson.*;
 import java.time.Duration;
 import java.time.LocalDateTime;

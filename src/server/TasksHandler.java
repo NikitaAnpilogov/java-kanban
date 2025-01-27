@@ -1,14 +1,13 @@
-package Server;
+package server;
 
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import exceptions.NotFoundException;
-import tasks.Subtask;
-import java.io.IOException;
-import java.io.InputStream;
+import tasks.Task;
+import java.io.*;
 import java.util.List;
 
-public class SubtasksHandler extends BaseHttpHandler implements HttpHandler {
+public class TasksHandler extends BaseHttpHandler implements HttpHandler {
     @Override
     public void handle(HttpExchange exchange) throws IOException {
         String method = exchange.getRequestMethod();
@@ -23,41 +22,42 @@ public class SubtasksHandler extends BaseHttpHandler implements HttpHandler {
         switch (method) {
             case "GET":
                 if (isHaveId) {
-                    Subtask subtask;
+                    Task task;
                     try {
-                        subtask = taskManager.getSubtask(id);
+                        task = taskManager.getTask(id);
                     } catch (NotFoundException e) {
                         sendNotFound(exchange, e.getMessage());
                         break;
                     }
-                    String json = gson.toJson(subtask);
+                    String json = gson.toJson(task);
                     sendText(exchange, json);
                 } else {
-                    List<Subtask> listOfSubtasks = taskManager.getListSubtask();
-                    String json = gson.toJson(listOfSubtasks);
+                    List<Task> listOfTasks = taskManager.getListTask();
+                    String json = gson.toJson(listOfTasks);
                     sendText(exchange, json);
                 }
                 break;
             case "POST":
                 InputStream inputStream = exchange.getRequestBody();
                 String jsonSubtask = new String(inputStream.readAllBytes(), getUtf());
-                Subtask subtask = gson.fromJson(jsonSubtask, Subtask.class);
+                Task task = gson.fromJson(jsonSubtask, Task.class);
                 boolean isCross = false;
                 Integer idCross = 0;
                 if (isHaveId) {
-                    isCross = taskManager.updateSubtask(subtask); // Если задача пересекается, то updateTask возвращает true
+                    isCross = taskManager.updateTask(task); // Если задача пересекается, то updateTask возвращает true
                 } else {
-                    idCross = taskManager.addSubtask(subtask); // Если задача пересекается, то addTask возвращает Integer = null
+                    idCross = taskManager.addTask(task); // Если задача пересекается, то addTask возвращает Integer = null
                 }
                 if (isCross || idCross == null) {
-                    sendHasInteractions(exchange, "Subtask is crossing the other tasks");
+                    sendHasInteractions(exchange, "Task is crossing the other tasks");
+                    break;
                 }
                 sendWithoutAnswer(exchange);
                 break;
             case "DELETE":
                 if (isHaveId) {
-                    taskManager.removeSubtask(id);
-                    sendText(exchange, "Subtask is deleted");
+                    taskManager.removeTask(id);
+                    sendText(exchange, "Task is deleted");
                 } else {
                     sendNotFound(exchange, "ID is not send");
                 }

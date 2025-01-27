@@ -1,63 +1,75 @@
-package Server;
+package server;
 
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import exceptions.NotFoundException;
-import tasks.Task;
-import java.io.*;
+import tasks.Epic;
+import tasks.Subtask;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.List;
 
-public class TasksHandler extends BaseHttpHandler implements HttpHandler {
+public class EpicsHandler extends BaseHttpHandler implements HttpHandler {
     @Override
     public void handle(HttpExchange exchange) throws IOException {
         String method = exchange.getRequestMethod();
         String path = exchange.getRequestURI().getPath();
         String[] arrayPath = path.split("/");
         boolean isHaveId = false;
+        boolean isHaveSubtask = false;
         int id = 0;
         if (arrayPath.length > 2) {
             isHaveId = true;
             id = Integer.parseInt(arrayPath[2]);
+            if (arrayPath.length > 3) {
+                isHaveSubtask = true;
+            }
         }
         switch (method) {
             case "GET":
                 if (isHaveId) {
-                    Task task;
+                    Epic epic;
                     try {
-                        task = taskManager.getTask(id);
+                        epic = taskManager.getEpic(id);
                     } catch (NotFoundException e) {
                         sendNotFound(exchange, e.getMessage());
                         break;
                     }
-                    String json = gson.toJson(task);
+                    if (isHaveSubtask) {
+                        List<Subtask> subtasksOfEpic;
+                        try {
+                            subtasksOfEpic = taskManager.getSubtasksOfEpic(id);
+                        } catch (NotFoundException e) {
+                            sendNotFound(exchange, e.getMessage());
+                            break;
+                        }
+                        String json = gson.toJson(subtasksOfEpic);
+                        sendText(exchange, json);
+                        break;
+                    }
+                    String json = gson.toJson(epic);
                     sendText(exchange, json);
                 } else {
-                    List<Task> listOfTasks = taskManager.getListTask();
-                    String json = gson.toJson(listOfTasks);
+                    List<Epic> listOfEpics = taskManager.getListEpic();
+                    String json = gson.toJson(listOfEpics);
                     sendText(exchange, json);
                 }
                 break;
             case "POST":
                 InputStream inputStream = exchange.getRequestBody();
-                String jsonSubtask = new String(inputStream.readAllBytes(), getUtf());
-                Task task = gson.fromJson(jsonSubtask, Task.class);
-                boolean isCross = false;
-                Integer idCross = 0;
+                String jsonEpic = new String(inputStream.readAllBytes(), getUtf());
+                Epic epic = gson.fromJson(jsonEpic, Epic.class);
                 if (isHaveId) {
-                    isCross = taskManager.updateTask(task); // Если задача пересекается, то updateTask возвращает true
+                    taskManager.updateEpic(epic);
                 } else {
-                    idCross = taskManager.addTask(task); // Если задача пересекается, то addTask возвращает Integer = null
-                }
-                if (isCross || idCross == null) {
-                    sendHasInteractions(exchange, "Task is crossing the other tasks");
-                    break;
+                    taskManager.addEpic(epic);
                 }
                 sendWithoutAnswer(exchange);
                 break;
             case "DELETE":
                 if (isHaveId) {
-                    taskManager.removeTask(id);
-                    sendText(exchange, "Task is deleted");
+                    taskManager.removeEpic(id);
+                    sendText(exchange, "Epic is deleted");
                 } else {
                     sendNotFound(exchange, "ID is not send");
                 }
