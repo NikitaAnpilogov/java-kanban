@@ -159,7 +159,6 @@ public class InMemoryTaskManager implements TaskManager {
         }
         int idEpic = subtask.getIdEpic();
         checkStatusEpic(idEpic);
-        //addTaskToSortedTasks(epics.get(idEpic));
         return idSubtask;
     }
 
@@ -211,7 +210,6 @@ public class InMemoryTaskManager implements TaskManager {
         }
         int idEpic = subtask.getIdEpic();
         checkStatusEpic(idEpic);
-        //addTaskToSortedTasks(epics.get(idEpic));
         return isCross;
     }
 
@@ -332,9 +330,7 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     private void removeTaskFromSortedTasks(Task task) {
-        if (sortedTasks.contains(task)) {
-            sortedTasks.remove(task);
-        }
+        sortedTasks.remove(task);
     }
 
     private boolean checkCrossTime(Task task) {

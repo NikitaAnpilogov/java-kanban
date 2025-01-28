@@ -6,7 +6,6 @@ import tasks.Task;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -105,7 +104,6 @@ class TaskTest {
         Task expectedTask2 = taskManager.getTask(testId1);
         List<Task> history = taskManager.getHistory();
         assertEquals(expectedTask2, history.get(0), "Последняя добавленная задача имеет отличающиеся параметры");
-        //assertEquals(expectedTask1, history.get(0), "Первая добавленная задача имеет отличающиеся параметры");
     }
 
     @Test
