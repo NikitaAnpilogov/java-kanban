@@ -97,7 +97,7 @@ class InMemoryHistoryManagerTest {
     void checkRemoveFirst() {
         inMemoryHistoryManager.remove(subtask.getId());
         String expectedTask = "Name2";
-        ArrayList<Task> tasks = new ArrayList<>(inMemoryHistoryManager.getHistory());
+        List<Task> tasks = new ArrayList<>(inMemoryHistoryManager.getHistory());
         assertEquals(tasks.getFirst().getName(), expectedTask, "Удалил не первый элемент");
     }
 
@@ -105,7 +105,7 @@ class InMemoryHistoryManagerTest {
     void checkRemoveLast() {
         inMemoryHistoryManager.remove(task.getId());
         String expectedTask = "Name2";
-        ArrayList<Task> tasks = new ArrayList<>(inMemoryHistoryManager.getHistory());
+        List<Task> tasks = new ArrayList<>(inMemoryHistoryManager.getHistory());
         assertEquals(tasks.getLast().getName(), expectedTask, "Удалил не последний элемент");
     }
 
@@ -113,7 +113,7 @@ class InMemoryHistoryManagerTest {
     void checkRemoveIntermediate() {
         inMemoryHistoryManager.remove(epic.getId());
         String expectedTask = "Name1";
-        ArrayList<Task> tasks = new ArrayList<>(inMemoryHistoryManager.getHistory());
+        List<Task> tasks = new ArrayList<>(inMemoryHistoryManager.getHistory());
         assertEquals(tasks.get(1).getName(), expectedTask, "Удалил не средний элемент");
     }
 }

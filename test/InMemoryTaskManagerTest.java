@@ -125,9 +125,7 @@ class InMemoryTaskManagerTest extends TaskManagerTest {
     @Test
     void shouldRemoveSubtask() {
         taskManager.removeSubtask(subtask.getId());
-        //Subtask subtaskTest = taskManager.getSubtask(subtask.getId());
         List<Subtask> subtaskTest = taskManager.getListSubtask();
-        //assertNull(subtaskTest, "removeSubtask не работает");
         assertEquals(subtaskTest.size(), 0, "removeSubtask не работает");
     }
 
@@ -194,7 +192,6 @@ class InMemoryTaskManagerTest extends TaskManagerTest {
         Task expectedTask2 = taskManager.getTask(testId1);
         List<Task> history = taskManager.getHistory();
         assertEquals(expectedTask2, history.get(0), "Последняя добавленная задача имеет отличающиеся параметры");
-        //assertEquals(expectedTask1, history.get(0), "Первая добавленная задача имеет отличающиеся параметры");
     }
 
     @Test
@@ -219,7 +216,6 @@ class InMemoryTaskManagerTest extends TaskManagerTest {
         task2.setStartTime(time);
         taskManager.addTask(task);
         taskManager.addTask(task2);
-        List sortedTasks = taskManager.getPrioritizedTasks();
         int expectedSize = 1;
         System.out.println(task);
         System.out.println(task2);

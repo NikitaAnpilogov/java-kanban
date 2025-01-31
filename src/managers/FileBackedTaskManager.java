@@ -1,5 +1,6 @@
 package managers;
 
+import exceptions.ManagerSaveException;
 import tasks.*;
 
 import java.io.*;
@@ -39,30 +40,31 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
     }
 
     @Override
-    public int addTask(Task task) {
-        int answer = super.addTask(task);
+    public Integer addTask(Task task) {
+        Integer answer = super.addTask(task);
         save();
         return answer;
     }
 
     @Override
-    public int addEpic(Epic epic) {
-        int answer = super.addEpic(epic);
+    public Integer addEpic(Epic epic) {
+        Integer answer = super.addEpic(epic);
         save();
         return answer;
     }
 
     @Override
-    public int addSubtask(Subtask subtask) {
-        int answer = super.addSubtask(subtask);
+    public Integer addSubtask(Subtask subtask) {
+        Integer answer = super.addSubtask(subtask);
         save();
         return answer;
     }
 
     @Override
-    public void updateTask(Task task) {
-        super.updateTask(task);
+    public boolean updateTask(Task task) {
+        boolean isCross = super.updateTask(task);
         save();
+        return isCross;
     }
 
     @Override
@@ -72,9 +74,10 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
     }
 
     @Override
-    public void updateSubtask(Subtask subtask) {
-        super.updateSubtask(subtask);
+    public boolean updateSubtask(Subtask subtask) {
+        boolean isCross = super.updateSubtask(subtask);
         save();
+        return isCross;
     }
 
     @Override
